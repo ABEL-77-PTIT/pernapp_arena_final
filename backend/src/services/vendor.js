@@ -3,7 +3,7 @@ import Repository from '../repositories/vendor.js'
 export default {
   count: async (req) => {
     try {
-      return Repository.count()
+      return await Repository.count()
     } catch (error) {
       throw error
     }

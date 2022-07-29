@@ -3,7 +3,7 @@ import Service from '../services/vendor.js'
 export default {
   count: async (req, res) => {
     try {
-      const data = Service.count(req)
+      const data = await Service.count(req)
       return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
@@ -13,7 +13,6 @@ export default {
   find: async (req, res) => {
     try {
       const data = await Service.find(req)
-
       return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
@@ -27,7 +26,7 @@ export default {
 
   create: async (req, res) => {
     try {
-      const data = Service.create(req)
+      const data = await Service.create(req)
 
       return ResponseHandler.success(res, data)
     } catch (error) {

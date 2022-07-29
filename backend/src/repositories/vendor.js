@@ -14,7 +14,9 @@ const find = async (req) => {
     throw error
   }
 }
+
 const findById = async () => {}
+
 const create = async (req) => {
   try {
     const data = { ...req.body }
