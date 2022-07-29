@@ -21,7 +21,8 @@ export default {
 
   create: async (req) => {
     try {
-      return await Repository.create(req)
+      const data = { ...req.body }
+      return await Repository.create(data)
     } catch (error) {
       throw error
     }

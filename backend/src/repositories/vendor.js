@@ -17,10 +17,8 @@ const find = async (req) => {
 
 const findById = async () => {}
 
-const create = async (req) => {
+const create = async (data) => {
   try {
-    const data = { ...req.body }
-
     return await Model.create(data)
   } catch (error) {
     throw error

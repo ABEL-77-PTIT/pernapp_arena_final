@@ -1,10 +1,12 @@
 import CountryRepository from '../repositories/country.js'
 import CustomerRepository from '../repositories/customer.js'
 import UserRepository from '../repositories/user.js'
+import VendorRepository from '../repositories/vendor.js'
 
 import countries from './countries.js'
 import customers from './customers.js'
 import users from './users.js'
+import vendors from './vendor.js'
 
 const initCountries = async () => {
   try {
@@ -80,10 +82,37 @@ const initUsers = async () => {
   }
 }
 
+const initVendors = async () => {
+  try {
+    console.log(`Init vendors`)
+
+    let entries = await VendorRepository.find({})
+
+    console.log('entries', entries)
+    if (entries.length) {
+      console.log(`=> vendor already exist`)
+      return
+    }
+
+    console.log('vendors', vendors)
+
+    for (let i = 0, leng = vendors.length; i < leng; i++) {
+      await VendorRepository.create(vendors[i])
+        .then((res) => console.log(`| create vendors [${i + 1}/${leng}] successful`))
+        .catch((err) =>
+          console.log(`| create vendor [${i + 1}/${leng}] failed with error: ${err.message}`),
+        )
+    }
+  } catch (error) {
+    console.log('initVendor error :>> ', error)
+  }
+}
+
 const init = async () => {
   await initCountries()
   await initCustomers()
   await initUsers()
+  await initVendors()
 }
 
 init()
