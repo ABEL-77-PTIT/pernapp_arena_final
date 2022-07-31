@@ -2,11 +2,13 @@ import CountryRepository from '../repositories/country.js'
 import CustomerRepository from '../repositories/customer.js'
 import UserRepository from '../repositories/user.js'
 import VendorRepository from '../repositories/vendor.js'
+import ProductRepository from '../repositories/product.js'
 
 import countries from './countries.js'
 import customers from './customers.js'
 import users from './users.js'
 import vendors from './vendor.js'
+import products from './product.js'
 
 const initCountries = async () => {
   try {
@@ -108,11 +110,42 @@ const initVendors = async () => {
   }
 }
 
+const initProducts = async () => {
+  try {
+    console.log(`Init Products`)
+
+    let entries = await ProductRepository.find({})
+
+    console.log(entries)
+    if (entries.items.length) {
+      console.log(`=> Products already exist`)
+      return
+    }
+
+    let vendors = await VendorRepository.find({})
+
+    console.log('products', products)
+
+    for (let i = 0, leng = products.length; i < leng; i++) {
+      let vendorId = vendors[Math.floor(Math.random() * vendors.length)].id
+
+      await ProductRepository.create({ ...products[i], vendorId })
+        .then((res) => console.log(`| create Products [${i + 1}/${leng}] successful`))
+        .catch((err) =>
+          console.log(`| create Products [${i + 1}/${leng}] failed with error: ${err.message}`),
+        )
+    }
+  } catch (error) {
+    console.log('initProducts error :>> ', error)
+  }
+}
+
 const init = async () => {
   await initCountries()
   await initCustomers()
   await initUsers()
   await initVendors()
+  await initProducts()
 }
 
 init()
