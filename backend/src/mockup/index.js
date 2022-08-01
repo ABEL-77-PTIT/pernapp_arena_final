@@ -116,15 +116,12 @@ const initProducts = async () => {
 
     let entries = await ProductRepository.find({})
 
-    console.log(entries)
     if (entries.items.length) {
       console.log(`=> Products already exist`)
       return
     }
 
     let vendors = await VendorRepository.find({})
-
-    console.log('products', products)
 
     for (let i = 0, leng = products.length; i < leng; i++) {
       let vendorId = vendors[Math.floor(Math.random() * vendors.length)].id
