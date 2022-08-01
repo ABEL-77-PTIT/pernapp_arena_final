@@ -19,28 +19,39 @@ export default {
     }
   },
 
-  findById: async () => {
+  findById: async (req, res) => {
     try {
-    } catch (error) {}
-  },
-
-  create: async (req, res) => {
-    try {
-      const data = await Service.create(req)
-
+      const data = await Service.findById(req)
       return ResponseHandler.success(res, data)
     } catch (error) {
       return ResponseHandler.error(res, error)
     }
   },
 
-  update: async () => {
+  create: async (req, res) => {
     try {
-    } catch (error) {}
+      const data = await Service.create(req)
+      return ResponseHandler.success(res, data)
+    } catch (error) {
+      return ResponseHandler.error(res, error)
+    }
   },
 
-  delete: async () => {
+  update: async (req, res) => {
     try {
-    } catch (error) {}
+      const data = await Service.update(req)
+      return ResponseHandler.success(res, data)
+    } catch (error) {
+      return ResponseHandler.error(res, error)
+    }
+  },
+
+  delete: async (req, res) => {
+    try {
+      const data = await Service.delete(req)
+      return ResponseHandler.success(res, data)
+    } catch (error) {
+      return ResponseHandler.error(res, error)
+    }
   },
 }

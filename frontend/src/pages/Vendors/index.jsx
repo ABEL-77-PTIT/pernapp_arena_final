@@ -39,7 +39,9 @@ function VendorsPage(props) {
   }
 
   useEffect(() => {
-    getVendors()
+    if (!vendors.vendors) {
+      getVendors()
+    }
   }, [])
 
   const handleDelete = async (deleted) => {
@@ -66,7 +68,7 @@ function VendorsPage(props) {
       <Card>
         <Card.Section>
           <div>
-            Total items: <b>{vendors.vendors?.length}</b>
+            Total items: <b>{vendors?.vendors?.length}</b>
           </div>
         </Card.Section>
         <Table

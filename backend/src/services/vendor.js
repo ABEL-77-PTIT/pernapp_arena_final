@@ -1,7 +1,7 @@
 import Repository from '../repositories/vendor.js'
 
 export default {
-  count: async (req) => {
+  count: async () => {
     try {
       return await Repository.count()
     } catch (error) {
@@ -17,7 +17,14 @@ export default {
     }
   },
 
-  findById: async () => {},
+  findById: async (req) => {
+    try {
+      const { id } = req.params
+      return await Repository.findById(id)
+    } catch (error) {
+      throw error
+    }
+  },
 
   create: async (req) => {
     try {
@@ -28,7 +35,22 @@ export default {
     }
   },
 
-  update: async () => {},
+  update: async (req) => {
+    try {
+      const { id } = req.params
+      const data = { ...req.body }
+      return await Repository.update(id, data)
+    } catch (error) {
+      throw error
+    }
+  },
 
-  delete: async () => {},
+  delete: async (req) => {
+    try {
+      const { id } = req.params
+      return await Repository.delete(id)
+    } catch (error) {
+      throw error
+    }
+  },
 }

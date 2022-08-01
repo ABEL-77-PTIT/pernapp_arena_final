@@ -7,44 +7,45 @@ function Table(props) {
 
   const [selected, setSelected] = useState(null)
 
-  let rows = vendors?.vendors.map((item) => [
-    1,
-    <Stack vertical spacing="extraTight">
-      <div>
-        <b>{item.name}</b>
-      </div>
-    </Stack>,
-    <Stack vertical spacing="extraTight"></Stack>,
-    <Popover
-      active={item.id === selected?.id}
-      activator={
-        <Button
-          onClick={() => setSelected(selected?.id === item.id ? null : item)}
-          icon={MobileVerticalDotsMajor}
-          outline
+  let rows =
+    vendors?.vendors?.map((item, index) => [
+      index + 1,
+      <Stack vertical spacing="extraTight">
+        <div>
+          <b>{item.name}</b>
+        </div>
+      </Stack>,
+      <Stack vertical spacing="extraTight"></Stack>,
+      <Popover
+        active={item.id === selected?.id}
+        activator={
+          <Button
+            onClick={() => setSelected(selected?.id === item.id ? null : item)}
+            icon={MobileVerticalDotsMajor}
+            outline
+          />
+        }
+        onClose={() => setSelected(null)}
+      >
+        <ActionList
+          actionRole="menuitem"
+          items={[
+            {
+              content: 'Preview',
+              onAction: () => setSelected(null),
+            },
+            {
+              content: 'Edit',
+              onAction: () => onEdit(item) & setSelected(null),
+            },
+            {
+              content: 'Delete',
+              onAction: () => onDelete(item) & setSelected(null),
+            },
+          ]}
         />
-      }
-      onClose={() => setSelected(null)}
-    >
-      <ActionList
-        actionRole="menuitem"
-        items={[
-          {
-            content: 'Preview',
-            onAction: () => setSelected(null),
-          },
-          {
-            content: 'Edit',
-            onAction: () => onEdit(item) & setSelected(null),
-          },
-          {
-            content: 'Delete',
-            onAction: () => onDelete(item) & setSelected(null),
-          },
-        ]}
-      />
-    </Popover>,
-  ])
+      </Popover>,
+    ]) || []
   return (
     <DataTable
       columnContentTypes={['text', 'text', 'text', 'text']}

@@ -15,7 +15,19 @@ const find = async (req) => {
   }
 }
 
-const findById = async () => {}
+const findById = async (id) => {
+  try {
+    const entry = await Model.findOne({ where: { id } })
+
+    if (!entry) {
+      throw new Error('Not Found')
+    }
+
+    return entry
+  } catch (error) {
+    throw error
+  }
+}
 
 const create = async (data) => {
   try {
@@ -25,8 +37,22 @@ const create = async (data) => {
   }
 }
 
-const update = async () => {}
-const _delete = async () => {}
+const update = async (id, data) => {
+  try {
+    const updated = await Model.update(data, { where: { id }, returning: true, plain: true })
+
+    return findById(updated[1].id)
+  } catch (error) {
+    throw error
+  }
+}
+const _delete = async (id) => {
+  try {
+    return await Model.destroy({ where: { id } })
+  } catch (error) {
+    throw error
+  }
+}
 
 export default {
   count,
