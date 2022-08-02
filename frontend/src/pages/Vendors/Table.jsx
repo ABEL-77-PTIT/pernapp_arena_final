@@ -8,7 +8,7 @@ function Table(props) {
   const [selected, setSelected] = useState(null)
 
   let rows =
-    vendors?.vendors?.map((item, index) => [
+    vendors?.map((item, index) => [
       index + 1,
       <Stack vertical spacing="extraTight">
         <div>

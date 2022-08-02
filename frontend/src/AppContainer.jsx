@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectNotify, hideNotify, showNotify } from './redux/reducers/notify.js'
 import { selectAppLoading, hideAppLoading, showAppLoading } from './redux/reducers/appLoading.js'
 import { selectVendors, setVendors } from './redux/reducers/vendorSlice.js'
+import { setProducts, selectProducts } from './redux/reducers/productSlice.js'
 import App from './App'
 import LoadingPage from './components/LoadingPage/index.jsx'
 import { Toast } from '@shopify/polaris'
@@ -12,8 +13,9 @@ function AppContainer(props) {
   const appLoading = useSelector(selectAppLoading)
   const notify = useSelector(selectNotify)
   const vendors = useSelector(selectVendors)
+  const products = useSelector(selectProducts)
 
-  const reduxState = { appLoading, notify, vendors }
+  const reduxState = { appLoading, notify, vendors, products }
   const reduxActions = {
     showAppLoading: () => dispatch(showAppLoading()),
     hideAppLoading: () => dispatch(hideAppLoading()),
@@ -22,6 +24,8 @@ function AppContainer(props) {
     hideNotify: () => dispatch(hideNotify()),
 
     setVendors: (data) => dispatch(setVendors(data)),
+
+    setProducts: (data) => dispatch(setProducts(data)),
   }
 
   const appProps = {

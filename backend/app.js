@@ -17,6 +17,7 @@ import uploadRouter from './src/routes/upload.js'
 import vendorsRouter from './src/routes/vendor.js'
 import productRouter from './src/routes/product.js'
 
+//đoạn này giúp lấy đường dẫn tới folder của file
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 

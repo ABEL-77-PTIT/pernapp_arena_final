@@ -22,6 +22,6 @@ export const vendorSlice = createSlice({
 
 export const { setVendors } = vendorSlice.actions
 
-export const selectVendors = (state) => state.vendorSlice
+export const selectVendors = (state) => state.vendorSlice.vendors
 
 export default vendorSlice.reducer

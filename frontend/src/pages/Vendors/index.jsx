@@ -8,7 +8,6 @@ import Table from './Table.jsx'
 
 function VendorsPage(props) {
   const { actions, vendors } = props
-  console.log('vendors', vendors)
 
   const [isReady, setIsReady] = useState(false)
   const [created, setCreated] = useState(null)
@@ -39,7 +38,7 @@ function VendorsPage(props) {
   }
 
   useEffect(() => {
-    if (!vendors.vendors) {
+    if (!vendors) {
       getVendors()
     }
   }, [])
@@ -68,7 +67,7 @@ function VendorsPage(props) {
       <Card>
         <Card.Section>
           <div>
-            Total items: <b>{vendors?.vendors?.length}</b>
+            Total items: <b>{vendors?.length}</b>
           </div>
         </Card.Section>
         <Table
