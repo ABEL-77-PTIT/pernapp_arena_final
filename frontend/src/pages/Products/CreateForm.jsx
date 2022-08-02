@@ -9,12 +9,10 @@ CreateForm.propTypes = {
   created: PropTypes.object,
   onDiscard: PropTypes.func,
   onSubmit: PropTypes.func,
-  vendors: PropTypes.array,
 }
 
 CreateForm.defaultProps = {
   created: {},
-  vendors: null,
   onDiscard: () => null,
   onSubmit: () => null,
 }
@@ -144,30 +142,6 @@ function CreateForm(props) {
 
   const [formData, setFormData] = useState(initialFormData)
 
-  const getVendors = async () => {
-    try {
-      actions.showAppLoading()
-      let res = await VendorApi.find()
-
-      if (!res.success) {
-        throw res.error
-      }
-
-      actions.setVendors(res.data)
-    } catch (error) {
-      console.log(error)
-      actions.showNotify({ error: true, message: error.message })
-    } finally {
-      actions.hideAppLoading()
-    }
-  }
-
-  useEffect(() => {
-    if (!vendors) {
-      getVendors()
-    }
-  }, [])
-
   useEffect(() => {
     let _formData = JSON.parse(JSON.stringify(initialFormData))
     if (vendors) {
@@ -179,7 +153,11 @@ function CreateForm(props) {
         ],
       }
     }
-    console.log('_formData', _formData)
+    setFormData(_formData)
+
+    //set value mac dinh
+    // _formData.handle.value = 'pr01'
+    // handle create and update products
   }, [])
 
   const handleChange = (name, value) => {
@@ -188,6 +166,8 @@ function CreateForm(props) {
     _formData[name] = { ..._formData[name], value, error: '' }
     setFormData(_formData)
   }
+
+  console.log('formData', formData)
 
   return (
     <Stack vertical alignment="fill">

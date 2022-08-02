@@ -41,7 +41,7 @@ function VendorsPage(props) {
     if (!vendors) {
       getVendors()
     }
-  }, [])
+  }, [vendors])
 
   const handleDelete = async (deleted) => {
     console.log('deleted', deleted)

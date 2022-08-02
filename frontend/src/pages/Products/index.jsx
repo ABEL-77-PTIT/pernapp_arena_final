@@ -24,6 +24,24 @@ function ProductsPage(props) {
     }
   })
 
+  const getVendors = async () => {
+    try {
+      actions.showAppLoading()
+      let res = await VendorApi.find()
+
+      if (!res.success) {
+        throw res.error
+      }
+
+      actions.setVendors(res.data)
+    } catch (error) {
+      console.log(error)
+      actions.showNotify({ error: true, message: error.message })
+    } finally {
+      actions.hideAppLoading()
+    }
+  }
+
   const getProducts = async ({ page, limit }) => {
     try {
       actions.showAppLoading()
@@ -46,17 +64,17 @@ function ProductsPage(props) {
     if (!products) {
       getProducts({})
     }
-  }, [])
+  }, [products])
+
+  useEffect(() => {
+    if (!vendors) {
+      getVendors()
+    }
+  }, [vendors])
 
   if (!isReady) {
     return <PagePreloader />
   }
-
-  console.log('products', products)
-  // const handleChange = ({ page, limit }) => {
-  //   console.log('page', page)
-  //   console.log('limit', limit)
-  // }
 
   const handleDelete = async () => {
     try {
@@ -90,7 +108,6 @@ function ProductsPage(props) {
       <CreateForm
         {...props}
         created={created}
-        vendors={vendors}
         onDiscard={() => setCreated(null)}
         onSubmit={(formData) => handleSubmit(formData)}
       />

@@ -1,11 +1,24 @@
-import { Spinner } from '@shopify/polaris'
 import './styles.css'
 
 function LoadingPage(props) {
   return (
-    <div className="arc-loading">
-      <div>
-        <Spinner size="large" color="teal" />
+    <div className="load-page">
+      <div className="loader">
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <div>
+                    <div>
+                      <div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
