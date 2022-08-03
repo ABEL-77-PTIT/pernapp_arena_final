@@ -1,3 +1,4 @@
+import { Op, where } from 'sequelize'
 import Model from '../models/product.js'
 import VendorModel from '../models/vendor.js'
 
@@ -11,13 +12,50 @@ const count = async () => {
   }
 }
 
-const find = async ({ page, limit }) => {
+const find = async (req) => {
   try {
+    const { page, limit, status, price, vendorId, keyword, publish } = req.query
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
 
-    const count = await Model.count()
+    let where = {}
+    if (status !== undefined) {
+      where = { ...where, status }
+    }
+
+    if (price) {
+      where = {
+        ...where,
+        price: {
+          [Op.gte]: parseInt(price.split('-')[0]),
+          [Op.lte]: parseInt(price.split('-')[1]),
+        },
+      }
+    }
+
+    if (vendorId !== undefined) {
+      where = { ...where, vendorId: vendorId }
+    }
+
+    if (keyword) {
+      where = {
+        ...where,
+        [Op.or]: [
+          { title: { [Op.like]: `%${keyword}%` } },
+          { description: { [Op.like]: `%${keyword}%` } },
+        ],
+      }
+    }
+
+    if (publish !== undefined) {
+      where = { ...where, publish: publish }
+    }
+
+    console.log('where', where)
+
+    const count = await Model.count({ where })
     const items = await Model.findAll({
+      where,
       limit: _limit,
       offset: (_page - 1) * _limit,
       include,
