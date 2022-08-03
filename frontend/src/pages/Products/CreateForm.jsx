@@ -1,20 +1,25 @@
-import { Card, Stack } from '@shopify/polaris'
+import { Button, Card, Stack } from '@shopify/polaris'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import VendorApi from '../../api/vendor'
 import AppHeader from '../../components/AppHeader'
 import FormControl from '../../components/FormControl'
+import FormValidate from '../../helpers/formValidate'
 
 CreateForm.propTypes = {
   created: PropTypes.object,
   onDiscard: PropTypes.func,
   onSubmit: PropTypes.func,
+  //thang vendor ban đầu lưu trong redux là array, còn products là obj
+  vendors: PropTypes.array,
+  products: PropTypes.object,
 }
 
 CreateForm.defaultProps = {
   created: {},
   onDiscard: () => null,
   onSubmit: () => null,
+  vendors: [],
+  products: {},
 }
 
 const initialFormData = {
@@ -27,7 +32,7 @@ const initialFormData = {
     validate: {
       trim: true,
       required: [true, 'Required'],
-      minlength: [1, 'Too Short'],
+      minlength: [2, 'Too Short'],
       maxlength: [99, 'Too Long'],
     },
     autoFocus: true,
@@ -37,7 +42,6 @@ const initialFormData = {
     label: 'Description',
     value: '',
     error: '',
-    required: true,
     validate: {
       trim: true,
       required: [true, 'Required'],
@@ -60,7 +64,7 @@ const initialFormData = {
   },
   handle: {
     type: 'text',
-    label: 'Handle',
+    label: 'Seo url',
     value: '',
     error: '',
     required: true,
@@ -144,20 +148,42 @@ function CreateForm(props) {
 
   useEffect(() => {
     let _formData = JSON.parse(JSON.stringify(initialFormData))
+
     if (vendors) {
       _formData.vendorId = {
         ..._formData.vendorId,
         options: [
           { label: 'Select a vendor', value: '' },
-          ...vendors?.map((item) => ({ label: item.name, value: '' + item.id })),
+          ...vendors?.map((item) => ({ label: item.name.toUpperCase(), value: '' + item.id })),
         ],
       }
     }
-    setFormData(_formData)
 
+    _formData.title.value = 'pr01'
+    _formData.description.value = 'pr01'
+    _formData.status.value = 'DRAFT'
+    _formData.price.value = '1200'
     //set value mac dinh
-    // _formData.handle.value = 'pr01'
+    _formData.handle.value = 'pr01'
+
     // handle create and update products
+    console.log('created', created)
+    if (created.id) {
+      Array.from(['title', 'description', 'price', 'handle', 'status', 'vendorId']).map(
+        (key) => (_formData[key] = { ..._formData[key], value: String(created[key] || '') }), //spread operator clone obj and updated value
+      )
+      Array.from(['publish']).map(
+        (key) => (_formData[key] = { ..._formData[key], value: Boolean(created[key] || '') }),
+      )
+      Array.from(['thumbnail']).map(
+        (key) => (_formData[key] = { ..._formData[key], originValue: String(created[key]) }),
+      )
+      Array.from(['images']).map(
+        (key) => (_formData[key] = { ..._formData[key], originValue: created[key] || [] }),
+      )
+    }
+
+    setFormData(_formData)
   }, [])
 
   const handleChange = (name, value) => {
@@ -167,11 +193,28 @@ function CreateForm(props) {
     setFormData(_formData)
   }
 
-  console.log('formData', formData)
+  const handleSubmit = () => {
+    try {
+      const { valid, data } = FormValidate.validateForm(formData)
+
+      if (valid) {
+        data['thumbnail'].value = formData['thumbnail'].value
+        data['images'].value = formData['images'].value
+
+        onSubmit(data)
+      } else {
+        setFormData(data)
+        throw new Error('Invalid form data')
+      }
+    } catch (error) {
+      console.log(error)
+      actions.showNotify({ error: true, message: error.message })
+    }
+  }
 
   return (
     <Stack vertical alignment="fill">
-      <AppHeader title="Add product" onBack={onDiscard} />
+      <AppHeader title={created.id ? 'Edit product' : 'Add product'} onBack={onDiscard} />
 
       <Card sectioned>
         <Stack vertical alignment="fill">
@@ -213,8 +256,73 @@ function CreateForm(props) {
             </Stack.Item>
             <Stack.Item fill></Stack.Item>
           </Stack>
+          <Stack>
+            {created.id ? (
+              <Stack.Item fill>
+                <FormControl
+                  {...formData['handle']}
+                  disabled
+                  onChange={(value) => handleChange('handle', value)}
+                />
+              </Stack.Item>
+            ) : (
+              ''
+            )}
+            <Stack.Item fill>
+              <FormControl
+                {...formData['price']}
+                onChange={(value) => handleChange('price', value)}
+              />
+            </Stack.Item>
+          </Stack>
+
+          <Stack>
+            <Stack.Item fill>
+              <FormControl
+                {...formData['thumbnail']}
+                onChange={(value) => handleChange('thumbnail', value)}
+                onDeleteOriginValue={(value) => {
+                  let _formData = JSON.parse(JSON.stringify(formData))
+                  Array.from(['thumbnail', 'images']).forEach(
+                    (key) => (_formData[key] = formData[key]),
+                  )
+                  _formData['thumbnail'] = {
+                    ..._formData['thumbnail'],
+                    originValue: '',
+                    error: '',
+                  }
+                  setFormData(_formData)
+                }}
+              />
+            </Stack.Item>
+            <Stack.Item fill>
+              <FormControl
+                {...formData['images']}
+                onChange={(value) => handleChange('images', value)}
+                //
+                onDeleteOriginValue={(value) => {
+                  let _formData = JSON.parse(JSON.stringify(formData))
+                  Array.from(['thumbnail', 'images']).forEach(
+                    (key) => (_formData[key] = formData[key]),
+                  )
+                  _formData['images'] = {
+                    ..._formData['images'],
+                    originValue: _formData['images'].originValue.filter((item) => item !== value),
+                    error: '',
+                  }
+                  setFormData(_formData)
+                }}
+              />
+            </Stack.Item>
+          </Stack>
         </Stack>
       </Card>
+      <Stack distribution="trailing">
+        <Button onClick={onDiscard}>Discard</Button>
+        <Button primary onClick={handleSubmit}>
+          {created.id ? 'Save' : 'Add'}
+        </Button>
+      </Stack>
     </Stack>
   )
 }

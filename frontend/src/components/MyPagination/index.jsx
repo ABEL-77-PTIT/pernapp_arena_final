@@ -18,7 +18,7 @@ MyPagination.defaultProps = {
 }
 
 function MyPagination(props) {
-  const { totalPages, onChange } = props
+  const { totalPages, onChange, filters } = props
 
   const [page, setPage] = useState(props.page)
   const [limit, setLimit] = useState(props.limit)

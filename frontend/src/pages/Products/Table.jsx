@@ -4,10 +4,10 @@ import { useState } from 'react'
 import Avatar from '../../components/Avatar'
 
 function Table(props) {
-  console.log('props table', props)
   const { products, onEdit, onDelete } = props
 
   const [selected, setSelected] = useState(null)
+
   let rows =
     products?.items.map((item, index) => [
       (products?.page - 1) * products?.limit + index + 1,

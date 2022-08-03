@@ -1,17 +1,25 @@
 import { Card, Stack } from '@shopify/polaris'
 import { useEffect, useState } from 'react'
+import qs from 'query-string'
+import { useLocation, useSearchParams } from 'react-router-dom'
+
 import ProductApi from '../../api/product.js'
+import UploadApi from '../../api/upload.js'
 import VendorApi from '../../api/vendor.js'
+
 import AppHeader from '../../components/AppHeader/index.jsx'
 import MyPagination from '../../components/MyPagination/index.jsx'
 import PagePreloader from '../../components/PagePreloader/index.jsx'
 import ConfirmDelete from './ConfirmDelete.jsx'
 import CreateForm from './CreateForm.jsx'
+import Filter from './Filter.jsx'
 import Table from './Table.jsx'
 
 function ProductsPage(props) {
   const { actions, products, vendors } = props
+  const location = useLocation()
 
+  const [searcParams, setSearchParams] = useSearchParams()
   const [isReady, setIsReady] = useState(false)
   const [created, setCreated] = useState(null)
   const [deleted, setDeleted] = useState(null)
@@ -42,10 +50,10 @@ function ProductsPage(props) {
     }
   }
 
-  const getProducts = async ({ page, limit }) => {
+  const getProducts = async (query) => {
     try {
       actions.showAppLoading()
-      let res = await ProductApi.find({ page, limit })
+      let res = await ProductApi.find(query)
 
       if (!res.success) {
         throw res.error
@@ -61,16 +69,18 @@ function ProductsPage(props) {
   }
 
   useEffect(() => {
-    if (!products) {
-      getProducts({})
-    }
-  }, [products])
-
-  useEffect(() => {
     if (!vendors) {
       getVendors()
     }
-  }, [vendors])
+  }, [])
+
+  useEffect(() => {
+    console.log('useEffect location')
+    console.log(qs.parse(location.search))
+    if (!products || location.search) {
+      getProducts(location.search)
+    }
+  }, [location])
 
   if (!isReady) {
     return <PagePreloader />
@@ -90,7 +100,7 @@ function ProductsPage(props) {
 
       setDeleted(null)
       //xóa đồng thời ở api và bên redux
-      getProducts({})
+      getProducts(location.search)
     } catch (error) {
       console.log(error)
       actions.showNotify({ message: error.message, error: true })
@@ -99,8 +109,88 @@ function ProductsPage(props) {
     }
   }
 
-  const handleSubmit = (formData) => {
-    console.log('formData', formData)
+  const handleSubmit = async (formData) => {
+    try {
+      actions.showAppLoading()
+
+      //handle upload Thumbnail
+      if (formData['thumbnail'].value) {
+        let thumbnail = await UploadApi.upload([formData['thumbnail'].value])
+
+        if (!thumbnail.success) {
+          actions.showNotify({ error: true, message: thumbnail.error.message })
+        }
+        formData['thumbnail'].value = thumbnail.data[0]
+      }
+
+      //handle upload Images
+      if (formData['images'].value) {
+        let images = await UploadApi.upload(formData['images'].value)
+
+        if (!images.success) {
+          actions.showNotify({ error: true, message: images.error.message })
+        }
+        formData['images'].value = [...images.data, ...formData['images'].originValue]
+      } else if (formData['images'].originValue.length) {
+        formData['images'].value = formData['images'].originValue
+      }
+
+      let data = {}
+
+      Object.keys(formData).forEach((key) =>
+        formData[key].value || key === 'publish' || key === 'thumbnail'
+          ? (data[key] = formData[key].value)
+          : null,
+      )
+
+      if (formData['images'].value.length) {
+        data['images'] = formData['images'].value
+      }
+
+      let res = null
+      if (created?.id) {
+        // update
+        res = await ProductApi.update(created.id, data)
+      } else {
+        // create
+        res = await ProductApi.create(data)
+      }
+      if (!res.success) {
+        throw res.error
+      }
+
+      actions.showNotify({ message: created?.id ? 'Saved' : 'Added' })
+
+      setCreated(null)
+      getProducts(location.search)
+    } catch (error) {
+      console.log(error)
+      actions.showNotify({ error: true, message: error.message })
+    } finally {
+      actions.hideAppLoading()
+    }
+  }
+
+  const handleFilter = (filter) => {
+    let params = qs.parse(location.search) || {}
+
+    if ('page' in filter) {
+      if (filter.page) {
+        params = { ...params, page: filter.page }
+      } else {
+        delete params.page
+      }
+    }
+
+    if ('limit' in filter) {
+      if (filter.limit) {
+        params = { ...params, limit: filter.limit }
+      } else {
+        delete params.limit
+      }
+    }
+
+    setSearchParams(params)
   }
 
   if (created) {
@@ -131,8 +221,11 @@ function ProductsPage(props) {
 
       <Card>
         <Card.Section>
+          <Filter filter />
+        </Card.Section>
+        <Card.Section>
           <div>
-            Total items: <b>{products?.items.length}</b>
+            Total items: <b>{products?.totalItems}</b>
           </div>
         </Card.Section>
         <Table
@@ -145,7 +238,7 @@ function ProductsPage(props) {
             page={products.page}
             limit={products.limit}
             totalPages={products.totalPages}
-            onChange={({ page, limit }) => getProducts({ page, limit })}
+            onChange={({ page, limit }) => handleFilter({ page, limit })}
           />
         </Card.Section>
       </Card>
