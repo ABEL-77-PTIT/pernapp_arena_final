@@ -44,6 +44,7 @@ function Filter(props) {
   const handleSearch = (value) => {
     setSearch(value)
 
+    console.log('first', window.__searchTimeout)
     if (window.__searchTimeout) {
       clearTimeout(window.__searchTimeout)
     }

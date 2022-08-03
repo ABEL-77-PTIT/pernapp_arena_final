@@ -76,7 +76,9 @@ function ProductsPage(props) {
 
   useEffect(() => {
     console.log('useEffect location')
-    console.log(qs.parse(location.search))
+    console.log('search', qs.parse(location.search))
+    console.log('search', location.search)
+    //chinhs xacs la bij o day roi
     if (!products || location.search) {
       getProducts(location.search)
     }
@@ -174,6 +176,8 @@ function ProductsPage(props) {
   const handleFilter = (filter) => {
     let params = qs.parse(location.search) || {}
 
+    console.log('filter', filter)
+
     if ('page' in filter) {
       if (filter.page) {
         params = { ...params, page: filter.page }
@@ -189,6 +193,24 @@ function ProductsPage(props) {
         delete params.limit
       }
     }
+
+    if ('keyword' in filter) {
+      if (filter.keyword) {
+        params = { ...params, keyword: filter.keyword }
+      } else {
+        delete params.keyword
+      }
+    }
+
+    if ('publish' in filter) {
+      if (filter.publish) {
+        params = { ...params, publish: filter.publish }
+      } else {
+        delete params.publish
+      }
+    }
+
+    console.log('filter', filter)
 
     setSearchParams(params)
   }
@@ -221,7 +243,11 @@ function ProductsPage(props) {
 
       <Card>
         <Card.Section>
-          <Filter filter />
+          <Filter
+            vendors={vendors}
+            filter={qs.parse(location.search)}
+            onChange={(filter) => handleFilter(filter)}
+          />
         </Card.Section>
         <Card.Section>
           <div>
