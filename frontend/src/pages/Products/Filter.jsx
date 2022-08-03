@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { ActionList, Button, ButtonGroup, Popover, Stack } from '@shopify/polaris'
+import { ActionList, Button, ButtonGroup, Popover, Stack, Tag } from '@shopify/polaris'
 import { TextField } from '@shopify/polaris'
 import { useState } from 'react'
 
@@ -16,11 +16,13 @@ Filter.defaultProps = {
 }
 
 function Filter(props) {
-  const { onChange, filter } = props
+  const { onChange, filter, vendors } = props
 
   const [search, setSearch] = useState(filter.keyword || '')
   const [publish, setPublish] = useState(false)
+  const [vendorActive, setVendorsActive] = useState(false)
 
+  console.log('vendors', vendors)
   const publishActionList = [
     {
       content: 'True',
@@ -33,6 +35,14 @@ function Filter(props) {
       onAction: () => onChange({ ...filter, publish: 'false' }) & setPublish(false),
     },
   ]
+
+  const vendorssActionList = vendors.map((item) => ({
+    content: item.name,
+    value: '' + item.id,
+    onAction: () => onChange({ ...filter, vendorId: '' + item.id }) & setVendorsActive(false),
+  }))
+
+  console.log('vendorssActionList', vendorssActionList)
 
   const handleSearch = (value) => {
     setSearch(value)
@@ -61,7 +71,7 @@ function Filter(props) {
             }}
           />
         </Stack.Item>
-        <Stack.Item>
+        <Stack.Item fill>
           <ButtonGroup segemented>
             <Popover
               active={publish}
@@ -74,8 +84,27 @@ function Filter(props) {
             >
               <ActionList actionRole="menuitem" items={publishActionList} />
             </Popover>
+            <Popover
+              active={vendorActive}
+              activator={
+                <Button disclosure onClick={() => setVendorsActive(!vendorActive)}>
+                  Vendors
+                </Button>
+              }
+              onClose={() => setVendorsActive(false)}
+            >
+              <ActionList actionRole="menuitem" items={vendorssActionList} />
+            </Popover>
           </ButtonGroup>
         </Stack.Item>
+
+        <Stack>
+          {Boolean(filter.publish) && (
+            <Tag onRemove={() => onChange({ ...filter, publish: '' })}>
+              Status: {publishActionList.find((item) => item.value === filter.publish).content}
+            </Tag>
+          )}
+        </Stack>
       </Stack>
     </Stack>
   )

@@ -77,7 +77,6 @@ function ProductsPage(props) {
   useEffect(() => {
     console.log('useEffect location')
     console.log('search', qs.parse(location.search))
-    console.log('search', location.search)
     //chinhs xacs la bij o day roi
     if (!products || location.search) {
       getProducts(location.search)
@@ -164,7 +163,7 @@ function ProductsPage(props) {
       actions.showNotify({ message: created?.id ? 'Saved' : 'Added' })
 
       setCreated(null)
-      getProducts(location.search)
+      setSearchParams({})
     } catch (error) {
       console.log(error)
       actions.showNotify({ error: true, message: error.message })
