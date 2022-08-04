@@ -24,8 +24,6 @@ function ProductsPage(props) {
   const [created, setCreated] = useState(null)
   const [deleted, setDeleted] = useState(null)
 
-  console.log('products', products)
-
   useEffect(() => {
     if (!isReady && products) {
       setIsReady(true)
@@ -78,9 +76,10 @@ function ProductsPage(props) {
     console.log('useEffect location')
     console.log('search', qs.parse(location.search))
     //chinhs xacs la bij o day roi
-    if (!products || location.search) {
-      getProducts(location.search)
-    }
+    // if (!products || location.search) {
+    //   getProducts(location.search)
+    // }
+    getProducts(location.search)
   }, [location])
 
   if (!isReady) {
@@ -175,7 +174,7 @@ function ProductsPage(props) {
   const handleFilter = (filter) => {
     let params = qs.parse(location.search) || {}
 
-    console.log('filter', filter)
+    console.log('filter', filter.price)
 
     if ('page' in filter) {
       if (filter.page) {
@@ -209,7 +208,31 @@ function ProductsPage(props) {
       }
     }
 
-    console.log('filter', filter)
+    if ('vendorId' in filter) {
+      if (filter.vendorId) {
+        params = { ...params, vendorId: filter.vendorId }
+      } else {
+        delete filter.vendorId
+      }
+    }
+
+    if ('status' in filter) {
+      if (filter.status) {
+        params = { ...filter, status: filter.status }
+      } else {
+        delete filter.status
+      }
+    }
+
+    if ('price' in filter) {
+      if (filter.price && typeof filter.price === 'object') {
+        let priceSlug = filter.price.join(['-'])
+        params = { ...filter, price: priceSlug }
+      }
+      if (filter.price === '') {
+        delete filter.price
+      }
+    }
 
     setSearchParams(params)
   }

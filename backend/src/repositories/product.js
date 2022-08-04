@@ -14,7 +14,18 @@ const count = async () => {
 
 const find = async (req) => {
   try {
-    const { page, limit, status, price, vendorId, keyword, publish } = req.query
+    const {
+      page,
+      limit,
+      status,
+      price,
+      vendorId,
+      keyword,
+      publish,
+      sortPrice,
+      sortTitle,
+      sortUpdatedAt,
+    } = req.query
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
 
@@ -34,7 +45,11 @@ const find = async (req) => {
     }
 
     if (vendorId !== undefined) {
-      where = { ...where, vendorId: vendorId }
+      if (vendorId !== '0') {
+        where = { ...where, vendorId: parseInt(vendorId) }
+      } else {
+        where = { ...where, vendorId: { [Op.is]: null } }
+      }
     }
 
     if (keyword) {
@@ -52,6 +67,15 @@ const find = async (req) => {
     }
 
     console.log('where', where)
+
+    console.log('sortTitle :>> ', sortTitle)
+    let sort = []
+
+    if (sortTitle) {
+      sort: [...sort, sortTitle]
+    }
+
+    // [['title': 'asc'], ['price': 'desc']]
 
     const count = await Model.count({ where })
     const items = await Model.findAll({
