@@ -14,18 +14,8 @@ const count = async () => {
 
 const find = async (req) => {
   try {
-    const {
-      page,
-      limit,
-      status,
-      price,
-      vendorId,
-      keyword,
-      publish,
-      sortPrice,
-      sortTitle,
-      sortUpdatedAt,
-    } = req.query
+    const { page, limit, status, price, vendorId, keyword, publish, sort } = req.query
+    console.log('🚀 ~ file: product.js ~ line 18 ~ find ~ price', price)
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
 
@@ -66,16 +56,15 @@ const find = async (req) => {
       where = { ...where, publish: publish }
     }
 
-    console.log('where', where)
+    console.log('check where ==>>', where)
 
-    console.log('sortTitle :>> ', sortTitle)
-    let sort = []
-
-    if (sortTitle) {
-      sort: [...sort, sortTitle]
+    // handle sort product
+    let arrSort
+    if (sort !== undefined) {
+      arrSort = sort.split('-')
     }
 
-    // [['title': 'asc'], ['price': 'desc']]
+    console.log('check Sort ==>>', arrSort)
 
     const count = await Model.count({ where })
     const items = await Model.findAll({
@@ -83,7 +72,7 @@ const find = async (req) => {
       limit: _limit,
       offset: (_page - 1) * _limit,
       include,
-      order: [['updatedAt', 'DESC']],
+      order: [arrSort ? [arrSort[0], arrSort[1]] : ['updatedAt', 'DESC']],
     })
 
     return {

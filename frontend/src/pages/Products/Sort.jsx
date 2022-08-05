@@ -1,19 +1,11 @@
 import { Button, Popover, ActionList } from '@shopify/polaris'
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 
 function Sort(props) {
   const { onChange, filter } = props
   const [popoverActive, setPopoverActive] = useState(false)
-  const [sortPriceAction, setSortPriceAction] = useState(false)
-  const [sortCreateAtAction, setSortCreateAtAction] = useState(false)
-  const [sortTitleAction, setSortTitleAction] = useState(false)
 
-  console.log('filter', filter)
-
-  const togglePopoverActive = useCallback(
-    () => setPopoverActive((popoverActive) => !popoverActive),
-    [],
-  )
+  const togglePopoverActive = () => setPopoverActive((popoverActive) => !popoverActive)
 
   const activator = (
     <Button onClick={togglePopoverActive} disclosure={popoverActive ? 'up' : 'down'}>
@@ -25,19 +17,19 @@ function Sort(props) {
     {
       content: 'Price',
       value: 'asc',
-      onAction: () => onChange({ ...filter, sortPrice: 'ASC' }) & setSortPriceAction(false),
+      onAction: () => onChange({ ...filter, sort: 'price-ASC' }),
     },
 
     {
       content: 'Title',
       value: 'asc',
-      onAction: () => onChange({ ...filter, sortTitle: 'ASC' }) & setSortTitleAction(false),
+      onAction: () => onChange({ ...filter, sort: 'title-ASC' }),
     },
 
     {
-      content: 'CreateAt',
+      content: 'UpdatedAt',
       value: 'asc',
-      onAction: () => onChange({ ...filter, sortCreateAt: 'ASC' }) & setSortCreateAtAction(false),
+      onAction: () => onChange({ ...filter, sort: 'updatedAt-ASC' }),
     },
   ]
 
@@ -45,23 +37,21 @@ function Sort(props) {
     {
       content: 'Price',
       value: 'desc',
-      onAction: () => onChange({ ...filter, sortPrice: 'DESC' }) & setSortPriceAction(false),
+      onAction: () => onChange({ ...filter, sort: 'price-DESC' }),
     },
 
     {
       content: 'Title',
       value: 'desc',
-      onAction: () => onChange({ ...filter, sortTitle: 'DESC' }) & setSortTitleAction(false),
+      onAction: () => onChange({ ...filter, sort: 'title-DESC' }),
     },
 
     {
-      content: 'CreateAt',
+      content: 'UpdatedAt',
       value: 'desc',
-      onAction: () => onChange({ ...filter, sortCreateAt: 'DESC' }) & setSortCreateAtAction(false),
+      onAction: () => onChange({ ...filter, sort: 'updatedAt-DESC' }),
     },
   ]
-
-  console.log('filter sort', filter)
 
   return (
     <Popover

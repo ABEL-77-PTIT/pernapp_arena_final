@@ -1,7 +1,6 @@
 import apiCaller from '../helpers/apiCaller.js'
 
 const find = async (query) => {
-  console.log('query', query)
   return await apiCaller(`/api/products${query}`)
 }
 

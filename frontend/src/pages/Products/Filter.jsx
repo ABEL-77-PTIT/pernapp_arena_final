@@ -84,14 +84,14 @@ function Filter(props) {
     },
   ]
 
-  const handlePriceChange = (value) => {
+  const handlePriceChange = (priceValue) => {
     if (window.__searchTimeout) {
       clearTimeout(window._searchTimeout)
     }
 
     window.__searchTimeout = setTimeout(() => {
-      setPrice(value)
-      onChange({ ...filter, price: value })
+      setPrice(priceValue)
+      onChange({ ...filter, price: priceValue })
     }, 600)
   }
 
@@ -127,7 +127,10 @@ function Filter(props) {
             <Popover
               active={publishActive}
               activator={
-                <Button disclosure onClick={() => setPublishActive(!publishActive)}>
+                <Button
+                  disclosure={publishActive ? 'up' : 'down'}
+                  onClick={() => setPublishActive(!publishActive)}
+                >
                   Publish
                 </Button>
               }
@@ -138,7 +141,10 @@ function Filter(props) {
             <Popover
               active={vendorActive}
               activator={
-                <Button disclosure onClick={() => setVendorsActive(!vendorActive)}>
+                <Button
+                  disclosure={vendorActive ? 'up' : 'down'}
+                  onClick={() => setVendorsActive(!vendorActive)}
+                >
                   Vendors
                 </Button>
               }
@@ -150,7 +156,10 @@ function Filter(props) {
             <Popover
               active={statusActive}
               activator={
-                <Button disclosure onClick={() => setStatusActive(!statusActive)}>
+                <Button
+                  disclosure={statusActive ? 'up' : 'down'}
+                  onClick={() => setStatusActive(!statusActive)}
+                >
                   Status
                 </Button>
               }
@@ -195,6 +204,9 @@ function Filter(props) {
         )}
         {Boolean(filter.price) && (
           <Tag onRemove={() => onChange({ ...filter, price: [] })}>Price range: {filter.price}</Tag>
+        )}
+        {Boolean(filter.sort) && (
+          <Tag onRemove={() => onChange({ ...filter, sort: '' })}>Sort by: {filter.sort}</Tag>
         )}
       </Stack>
     </Stack>

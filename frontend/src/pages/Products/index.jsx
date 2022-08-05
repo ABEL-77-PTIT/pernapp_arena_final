@@ -19,7 +19,7 @@ function ProductsPage(props) {
   const { actions, products, vendors } = props
   const location = useLocation()
 
-  const [searcParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [isReady, setIsReady] = useState(false)
   const [created, setCreated] = useState(null)
   const [deleted, setDeleted] = useState(null)
@@ -48,7 +48,7 @@ function ProductsPage(props) {
     }
   }
 
-  const getProducts = async (query) => {
+  const getProducts = async (query = '?page=1&limit=50') => {
     try {
       actions.showAppLoading()
       let res = await ProductApi.find(query)
@@ -73,14 +73,18 @@ function ProductsPage(props) {
   }, [])
 
   useEffect(() => {
-    console.log('useEffect location')
-    console.log('search', qs.parse(location.search))
-    //chinhs xacs la bij o day roi
-    // if (!products || location.search) {
-    //   getProducts(location.search)
-    // }
-    getProducts(location.search)
-  }, [location])
+    if (!products) {
+      console.log('getProducts useEffect')
+      getProducts()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (products && location.search) {
+      console.log('getProducts with location.search')
+      getProducts(location.search)
+    }
+  }, [location.search])
 
   if (!isReady) {
     return <PagePreloader />
@@ -99,7 +103,6 @@ function ProductsPage(props) {
       actions.showNotify({ message: 'Deleted' })
 
       setDeleted(null)
-      //xóa đồng thời ở api và bên redux
       getProducts(location.search)
     } catch (error) {
       console.log(error)
@@ -174,8 +177,6 @@ function ProductsPage(props) {
   const handleFilter = (filter) => {
     let params = qs.parse(location.search) || {}
 
-    console.log('filter', filter.price)
-
     if ('page' in filter) {
       if (filter.page) {
         params = { ...params, page: filter.page }
@@ -212,7 +213,7 @@ function ProductsPage(props) {
       if (filter.vendorId) {
         params = { ...params, vendorId: filter.vendorId }
       } else {
-        delete filter.vendorId
+        delete params.vendorId
       }
     }
 
@@ -220,21 +221,31 @@ function ProductsPage(props) {
       if (filter.status) {
         params = { ...filter, status: filter.status }
       } else {
-        delete filter.status
+        delete params.status
       }
     }
 
-    if ('price' in filter) {
-      if (filter.price && typeof filter.price === 'object') {
+    if ('price' in filter && typeof filter.price !== 'string') {
+      if (filter.price.length) {
         let priceSlug = filter.price.join(['-'])
         params = { ...filter, price: priceSlug }
+      } else {
+        delete params.price
       }
-      if (filter.price === '') {
-        delete filter.price
+    }
+
+    if ('sort' in filter) {
+      if (filter.sort) {
+        params = { ...params, sort: filter.sort }
+      } else {
+        delete params.sort
       }
     }
 
     setSearchParams(params)
+    if (JSON.stringify(params) === '{}') {
+      getProducts()
+    }
   }
 
   if (created) {
