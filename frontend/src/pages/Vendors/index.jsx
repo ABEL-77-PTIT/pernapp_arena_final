@@ -38,13 +38,30 @@ function VendorsPage(props) {
   }
 
   useEffect(() => {
-    if (!vendors) {
-      getVendors()
-    }
-  }, [vendors])
+    // if (!vendors) {
+    //   getVendors()
+    // }
+    getVendors()
+  }, [])
 
   const handleDelete = async (deleted) => {
-    console.log('deleted', deleted)
+    try {
+      actions.showAppLoading()
+
+      let res = await VendorApi.delete(deleted.id)
+      if (!res.success) {
+        throw res.error
+      }
+
+      actions.showNotify({ message: 'Deleted' })
+
+      getVendors()
+    } catch (error) {
+      console.log(error)
+      actions.showNotify({ message: error.message, error: true })
+    } finally {
+      actions.hideAppLoading()
+    }
   }
 
   if (!isReady) {

@@ -1,5 +1,16 @@
 import { Button, Popover, ActionList } from '@shopify/polaris'
 import { useState } from 'react'
+import PropTypes from 'prop-types'
+
+Sort.propTypes = {
+  onChange: PropTypes.func,
+  filter: PropTypes.object,
+}
+
+Sort.defaultProps = {
+  onChange: () => null,
+  filter: {},
+}
 
 function Sort(props) {
   const { onChange, filter } = props

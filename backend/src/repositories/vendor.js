@@ -7,9 +7,27 @@ const count = async () => {
     throw error
   }
 }
+
 const find = async (req) => {
   try {
-    return await Model.findAll()
+    const { page, limit } = req.query
+    let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
+    let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
+
+    const count = await Model.count()
+    const items = await Model.findAll({
+      limit: _limit,
+      offset: (_page - 1) * _limit,
+      order: [['updatedAt', 'DESC']],
+    })
+
+    return {
+      items,
+      page: _page,
+      limit: _limit,
+      totalPages: Math.ceil(count / _limit),
+      totalItems: count,
+    }
   } catch (error) {
     throw error
   }
@@ -31,7 +49,9 @@ const findById = async (id) => {
 
 const create = async (data) => {
   try {
-    return await Model.create(data)
+    const created = await Model.create(data)
+
+    return findById(created.id)
   } catch (error) {
     throw error
   }
@@ -46,6 +66,7 @@ const update = async (id, data) => {
     throw error
   }
 }
+
 const _delete = async (id) => {
   try {
     return await Model.destroy({ where: { id } })

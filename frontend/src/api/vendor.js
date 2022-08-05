@@ -16,10 +16,10 @@ const find = async () => {
 
 // }
 
-// const _delete = async (id) => {
-//   return await apiCaller(`api/vendors/${id}`)
-// }
+const _delete = async (id) => {
+  return await apiCaller(`/api/vendors/${id}`, 'DELETE')
+}
 
-const VendorApi = { count, find }
+const VendorApi = { count, find, delete: _delete }
 
 export default VendorApi

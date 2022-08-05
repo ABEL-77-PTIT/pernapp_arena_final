@@ -11,12 +11,6 @@ export const vendorSlice = createSlice({
     setVendors: (state, action) => {
       state.vendors = action.payload
     },
-
-    // createVendor: async () => {},
-
-    // updateVendor: async () => {},
-
-    // deleteVendor: async () => {},
   },
 })
 

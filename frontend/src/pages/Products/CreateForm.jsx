@@ -10,7 +10,7 @@ CreateForm.propTypes = {
   onDiscard: PropTypes.func,
   onSubmit: PropTypes.func,
   //thang vendor ban đầu lưu trong redux là array, còn products là obj
-  vendors: PropTypes.array,
+  vendors: PropTypes.object,
   products: PropTypes.object,
 }
 
@@ -18,7 +18,7 @@ CreateForm.defaultProps = {
   created: {},
   onDiscard: () => null,
   onSubmit: () => null,
-  vendors: [],
+  vendors: {},
   products: {},
 }
 
@@ -154,7 +154,7 @@ function CreateForm(props) {
         ..._formData.vendorId,
         options: [
           { label: 'Select a vendor', value: '' },
-          ...vendors?.map((item) => ({ label: item.name.toUpperCase(), value: '' + item.id })),
+          ...vendors.items.map((item) => ({ label: item.name.toUpperCase(), value: '' + item.id })),
         ],
       }
     }

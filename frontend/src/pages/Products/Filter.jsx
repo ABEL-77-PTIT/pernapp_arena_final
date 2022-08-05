@@ -16,17 +16,19 @@ import Sort from './Sort'
 Filter.propTypes = {
   filter: PropTypes.object,
   onChange: PropTypes.func,
-  vendors: PropTypes.array,
+  vendors: PropTypes.object,
 }
 
 Filter.defaultProps = {
   filter: {},
   onChange: () => null,
-  vendors: [],
+  vendors: {},
 }
 
 function Filter(props) {
   const { onChange, filter, vendors } = props
+
+  console.log('vendors', vendors)
 
   const [search, setSearch] = useState(filter.keyword || '')
   const [publishActive, setPublishActive] = useState(false)
@@ -54,7 +56,7 @@ function Filter(props) {
     },
   ]
 
-  const vendorsActionList = vendors.map((item) => ({
+  const vendorsActionList = vendors?.items?.map((item) => ({
     content: item.name.charAt(0).toUpperCase() + item.name.slice(1),
     value: '' + item.id,
     onAction: () => onChange({ ...filter, vendorId: '' + item.id }) & setVendorsActive(false),
