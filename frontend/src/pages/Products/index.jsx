@@ -16,7 +16,7 @@ import Filter from './Filter.jsx'
 import Table from './Table.jsx'
 
 function ProductsPage(props) {
-  const { actions, products, vendors } = props
+  const { actions, products, vendors, params } = props
   const location = useLocation()
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -48,7 +48,7 @@ function ProductsPage(props) {
     }
   }
 
-  const getProducts = async (query = '?page=1&limit=50') => {
+  const getProducts = async (query = '?page=1&limit=10') => {
     try {
       actions.showAppLoading()
       let res = await ProductApi.find(query)
@@ -58,6 +58,7 @@ function ProductsPage(props) {
       }
 
       actions.setProducts(res.data)
+      actions.setParams(query)
     } catch (error) {
       console.log(error)
       actions.showNotify({ error: true, message: error.message })
@@ -76,6 +77,9 @@ function ProductsPage(props) {
     if (!products) {
       console.log('getProducts useEffect')
       getProducts()
+    }
+    if (params) {
+      setSearchParams(params)
     }
   }, [])
 

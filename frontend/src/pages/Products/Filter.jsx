@@ -27,15 +27,19 @@ Filter.defaultProps = {
 
 function Filter(props) {
   const { onChange, filter, vendors } = props
-
-  console.log('vendors', vendors)
+  const initialValue = [1000, 100000]
+  const prefix = '$'
+  const min = 0
+  const max = 1000000
+  const step = 100
 
   const [search, setSearch] = useState(filter.keyword || '')
   const [publishActive, setPublishActive] = useState(false)
   const [vendorActive, setVendorsActive] = useState(false)
   const [statusActive, setStatusActive] = useState(false)
+  const [priceActive, setPriceActive] = useState(false)
 
-  const [price, setPrice] = useState(null)
+  const [rangeValue, setRangeValue] = useState(initialValue)
 
   const publishActionList = [
     {
@@ -86,14 +90,18 @@ function Filter(props) {
     },
   ]
 
-  const handlePriceChange = (priceValue) => {
+  const handleRangeSliderChange = (priceValue) => {
+    setRangeValue(priceValue)
+  }
+
+  const handleFilterPrice = () => {
+    setPriceActive(!priceActive)
     if (window.__searchTimeout) {
       clearTimeout(window._searchTimeout)
     }
 
     window.__searchTimeout = setTimeout(() => {
-      setPrice(priceValue)
-      onChange({ ...filter, price: priceValue })
+      onChange({ ...filter, price: rangeValue })
     }, 600)
   }
 
@@ -169,25 +177,49 @@ function Filter(props) {
             >
               <ActionList actionRole="menuitem" items={statusActionList} />
             </Popover>
+
+            <Popover
+              active={priceActive}
+              activator={
+                <Button
+                  disclosure={priceActive ? 'up' : 'down'}
+                  onClick={() => setPriceActive(!priceActive)}
+                >
+                  Price
+                </Button>
+              }
+              // onClose={() => setPriceActive(false)} //MUON TAT THI BO COMMENT DONG NAY
+            ></Popover>
+
             <Sort onChange={onChange} filter={filter} />
           </ButtonGroup>
         </Stack.Item>
-        <Stack.Item>
+
+        {priceActive && (
           <Card sectioned title="Filter theo Price">
-            <RangeSlider
-              label="Money spent is between"
-              labelHidden
-              value={price || [1, 1000000]}
-              prefix="$"
-              output
-              min={1}
-              max={1000000}
-              step={1}
-              onChange={handlePriceChange}
-            />
+            <Stack.Item fill>
+              <RangeSlider
+                output
+                label="Price is between"
+                value={rangeValue}
+                prefix={prefix}
+                min={min}
+                max={max}
+                step={step}
+                onChange={handleRangeSliderChange}
+              />
+            </Stack.Item>
+            <Stack.Item fill>
+              <div style={{ color: '#008080', marginTop: '10px' }}>
+                <Button size="slim" monochrome outline onClick={handleFilterPrice}>
+                  Submit
+                </Button>
+              </div>
+            </Stack.Item>
           </Card>
-        </Stack.Item>
+        )}
       </Stack>
+
       <Stack>
         {Boolean(filter.publish) && (
           <Tag onRemove={() => onChange({ ...filter, publish: '' })}>
