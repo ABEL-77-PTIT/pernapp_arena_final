@@ -27,10 +27,10 @@ Filter.defaultProps = {
 
 function Filter(props) {
   const { onChange, filter, vendors } = props
-  const initialValue = [1000, 100000]
+  const initialValue = [1000, 5000000]
   const prefix = '$'
   const min = 0
-  const max = 1000000
+  const max = 10000000
   const step = 100
 
   const [search, setSearch] = useState(filter.keyword || '')
@@ -188,8 +188,8 @@ function Filter(props) {
                   Price
                 </Button>
               }
-              // onClose={() => setPriceActive(false)} //MUON TAT THI BO COMMENT DONG NAY
-            ></Popover>
+              onClose={() => setPriceActive(true)} //MUON TAT THI BO COMMENT DONG NAY
+            />
 
             <Sort onChange={onChange} filter={filter} />
           </ButtonGroup>
