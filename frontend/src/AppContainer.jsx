@@ -1,12 +1,9 @@
+import { Toast } from '@shopify/polaris'
 import { useSelector, useDispatch } from 'react-redux'
+
 import { selectNotify, hideNotify, showNotify } from './redux/reducers/notify.js'
 import { selectAppLoading, hideAppLoading, showAppLoading } from './redux/reducers/appLoading.js'
-import {
-  selectVendors,
-  setVendors,
-  setFilterVendors,
-  selectFilters,
-} from './redux/reducers/vendorSlice.js'
+import { selectVendors, setVendors, setFilterVendors } from './redux/reducers/vendorSlice.js'
 import {
   setProducts,
   setParams,
@@ -15,7 +12,6 @@ import {
 } from './redux/reducers/productSlice.js'
 import App from './App'
 import LoadingPage from './components/LoadingPage/index.jsx'
-import { Toast } from '@shopify/polaris'
 
 function AppContainer(props) {
   const dispatch = useDispatch()
@@ -25,9 +21,9 @@ function AppContainer(props) {
   const vendors = useSelector(selectVendors)
   const products = useSelector(selectProducts)
   const params = useSelector(selectParams)
-  const filterVendor = useSelector(selectFilters)
 
   const reduxState = { appLoading, notify, vendors, products, params }
+
   const reduxActions = {
     showAppLoading: () => dispatch(showAppLoading()),
     hideAppLoading: () => dispatch(hideAppLoading()),

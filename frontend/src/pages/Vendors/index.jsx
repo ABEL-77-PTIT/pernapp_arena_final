@@ -73,13 +73,22 @@ function VendorsPage(props) {
       }
     }
 
+    if ('selectedOptions' in filter) {
+      if (filter.selectedOptions) {
+        params = { ...params, selectVendor: filter.selectedOptions }
+      } else {
+        delete params.selectVendor
+      }
+    }
+
+    console.log('params', params)
+
     setSearchParams(params)
   }
 
   const handleSubmit = async (formData) => {
     try {
       actions.showAppLoading()
-      console.log('formData', formData)
 
       let data = {}
       Object.keys(formData).forEach((key) =>

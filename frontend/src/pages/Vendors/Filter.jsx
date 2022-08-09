@@ -16,7 +16,7 @@ Filter.defaultProps = {
 }
 
 function Filter(props) {
-  const { vendors, onChange } = props
+  const { vendors, onChange, filter } = props
 
   const paginationInterval = 5
   const vendorsOptions = Array.from(vendors.items).map((item, index) => ({
@@ -41,9 +41,6 @@ function Filter(props) {
       return
     }
 
-    //cho nay de dua thang inputValue ra ngoai
-    onChange({ inputValue })
-
     const filterRegex = new RegExp(value, 'i')
     const resultOptions = vendorsOptions.filter((option) => option.label.match(filterRegex))
 
@@ -55,7 +52,9 @@ function Filter(props) {
   }
 
   useEffect(() => {
-    onChange(selectedOptions)
+    if (selectedOptions) {
+      onChange({ ...filter, selectedOptions })
+    }
   }, [selectedOptions])
 
   const removeTag = useCallback(
@@ -98,10 +97,6 @@ function Filter(props) {
   }, [willLoadMoreResults, visibleOptionIndex, options.length])
 
   const hasSelectedOptions = selectedOptions.length > 0
-
-  // const handleChangeTag = () => {
-  //   onChange({ ...filter, selectedOptions: selectedOptions })
-  // }
 
   const tagsMarkup = hasSelectedOptions
     ? selectedOptions.map((option) => {
