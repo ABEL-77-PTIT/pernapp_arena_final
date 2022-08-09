@@ -30,10 +30,10 @@ function ProductsPage(props) {
     }
   })
 
-  const getVendors = async () => {
+  const getVendors = async (query = `?page=1&limit=1000`) => {
     try {
       actions.showAppLoading()
-      let res = await VendorApi.find()
+      let res = await VendorApi.find(query)
 
       if (!res.success) {
         throw res.error

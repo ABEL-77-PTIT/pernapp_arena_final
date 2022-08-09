@@ -24,7 +24,7 @@ const update = async (id, data) => {
 
   Object.keys(data).forEach((name) => formData.append(name, data[name]))
 
-  // return await apiCaller(`/api/vendors/${id}`, 'PUT', formData)
+  return await apiCaller(`/api/vendors/${id}`, 'PUT', formData)
 }
 
 const _delete = async (id) => {

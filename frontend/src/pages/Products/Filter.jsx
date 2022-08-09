@@ -60,7 +60,7 @@ function Filter(props) {
     },
   ]
 
-  const vendorsActionList = vendors?.items?.map((item) => ({
+  const vendorsActionList = vendors?.items.map((item) => ({
     content: item.name.charAt(0).toUpperCase() + item.name.slice(1),
     value: '' + item.id,
     onAction: () => onChange({ ...filter, vendorId: '' + item.id }) & setVendorsActive(false),

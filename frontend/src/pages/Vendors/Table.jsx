@@ -1,4 +1,4 @@
-import { ActionList, Button, DataTable, Popover, Stack, Thumbnail } from '@shopify/polaris'
+import { ActionList, Button, DataTable, Popover, Stack } from '@shopify/polaris'
 import { MobileVerticalDotsMajor } from '@shopify/polaris-icons'
 import { useState } from 'react'
 
@@ -9,7 +9,8 @@ function Table(props) {
 
   let rows =
     vendors?.items.map((item, index) => [
-      index + 1,
+      // index + 1,
+      (vendors?.page - 1) * vendors?.limit + index + 1,
       <Stack vertical spacing="extraTight">
         <div>
           <b>{item.name}</b>

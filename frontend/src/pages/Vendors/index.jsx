@@ -1,6 +1,8 @@
 import qs from 'query-string'
 import { Card, Stack } from '@shopify/polaris'
 import { useEffect, useState } from 'react'
+import { useLocation, useSearchParams } from 'react-router-dom'
+
 import VendorApi from '../../api/vendor.js'
 import AppHeader from '../../components/AppHeader/index.jsx'
 import MyPagination from '../../components/MyPagination/index.jsx'
@@ -8,11 +10,10 @@ import PagePreloader from '../../components/PagePreloader/index.jsx'
 import ConfirmDelete from './ConfirmDelete.jsx'
 import CreateForm from './CreateForm.jsx'
 import Table from './Table.jsx'
-import { useLocation, useSearchParams } from 'react-router-dom'
+import Filter from './Filter'
 
 function VendorsPage(props) {
   const { actions, vendors } = props
-  console.log('vendors', vendors)
 
   const location = useLocation()
 
@@ -28,7 +29,7 @@ function VendorsPage(props) {
     }
   })
 
-  const getVendors = async (query = `?page=1&limit=10`) => {
+  const getVendors = async (query = `?page=1&limit=1000`) => {
     try {
       actions.showAppLoading()
       let res = await VendorApi.find(query)
@@ -54,6 +55,7 @@ function VendorsPage(props) {
 
   const handleFilter = (filter) => {
     let params = qs.parse(location.search) || {}
+    console.log('filter', filter)
 
     if ('page' in filter) {
       if (filter.page) {
@@ -154,6 +156,13 @@ function VendorsPage(props) {
       />
 
       <Card>
+        <Card.Section>
+          <Filter
+            vendors={vendors}
+            filter={qs.parse(location.search)}
+            onChange={(filter) => handleFilter(filter)}
+          />
+        </Card.Section>
         <Card.Section>
           <div>
             Total items: <b>{vendors?.length}</b>

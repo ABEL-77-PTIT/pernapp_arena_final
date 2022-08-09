@@ -1,6 +1,7 @@
 import { Button, Card, Stack } from '@shopify/polaris'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+
 import AppHeader from '../../components/AppHeader'
 import FormControl from '../../components/FormControl'
 import FormValidate from '../../helpers/formValidate'
@@ -9,7 +10,6 @@ CreateForm.propTypes = {
   created: PropTypes.object,
   onDiscard: PropTypes.func,
   onSubmit: PropTypes.func,
-  //thang vendor ban đầu lưu trong redux là array, còn products là obj
   vendors: PropTypes.object,
   products: PropTypes.object,
 }
