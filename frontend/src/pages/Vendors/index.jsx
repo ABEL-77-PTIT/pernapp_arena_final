@@ -13,13 +13,14 @@ import Table from './Table.jsx'
 import Filter from './Filter'
 
 function VendorsPage(props) {
-  const { actions, vendors } = props
+  const { actions } = props
 
   const location = useLocation()
 
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [isReady, setIsReady] = useState(false)
+  const [vendors, setVendors] = useState(null)
   const [created, setCreated] = useState(null)
   const [deleted, setDeleted] = useState(null)
 
@@ -38,7 +39,7 @@ function VendorsPage(props) {
         throw res.error
       }
 
-      actions.setVendors(res.data)
+      setVendors(res.data)
     } catch (error) {
       console.log(error)
       actions.showNotify({ error: true, message: error.message })
@@ -48,14 +49,11 @@ function VendorsPage(props) {
   }
 
   useEffect(() => {
-    if (!vendors || location.search) {
-      getVendors(location.search)
-    }
+    getVendors(location.search)
   }, [location.search])
 
   const handleFilter = (filter) => {
     let params = qs.parse(location.search) || {}
-    console.log('filter', filter)
 
     if ('page' in filter) {
       if (filter.page) {
@@ -73,15 +71,14 @@ function VendorsPage(props) {
       }
     }
 
-    if ('selectedOptions' in filter) {
-      if (filter.selectedOptions) {
-        params = { ...params, selectVendor: filter.selectedOptions }
+    if ('vendors' in filter) {
+      if (filter.vendors.length) {
+        let vendorSlug = filter.vendors.join([','])
+        params = { ...params, vendors: vendorSlug }
       } else {
-        delete params.selectVendor
+        delete params.vendors
       }
     }
-
-    console.log('params', params)
 
     setSearchParams(params)
   }
@@ -174,11 +171,12 @@ function VendorsPage(props) {
         </Card.Section>
         <Card.Section>
           <div>
-            Total items: <b>{vendors?.length}</b>
+            Total items: <b>{vendors.totalItems}</b>
           </div>
         </Card.Section>
         <Table
           {...props}
+          vendors={vendors}
           onEdit={(item) => setCreated(item)}
           onDelete={(item) => setDeleted(item)}
         />

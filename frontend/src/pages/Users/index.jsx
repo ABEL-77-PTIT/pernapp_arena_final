@@ -1,6 +1,8 @@
-import { Button, Card, Stack } from '@shopify/polaris'
+import { Card, Stack } from '@shopify/polaris'
 import { useState, useEffect } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
+import qs from 'query-string'
+
 import CountryApi from '../../api/country'
 import UploadApi from '../../api/upload'
 import UserApi from '../../api/user'
@@ -10,7 +12,6 @@ import PagePreloader from '../../components/PagePreloader'
 import ConfirmDelete from './ConfirmDelete'
 import CreateForm from './CreateForm'
 import Table from './Table.jsx'
-import qs from 'query-string'
 import Filter from './Filter'
 
 function UsersPage(props) {

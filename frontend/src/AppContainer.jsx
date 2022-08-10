@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { selectNotify, hideNotify, showNotify } from './redux/reducers/notify.js'
 import { selectAppLoading, hideAppLoading, showAppLoading } from './redux/reducers/appLoading.js'
-import { selectVendors, setVendors, setFilterVendors } from './redux/reducers/vendorSlice.js'
+import { selectVendors, setVendors } from './redux/reducers/vendorSlice.js'
 import {
   setProducts,
   setParams,
@@ -32,7 +32,6 @@ function AppContainer(props) {
     hideNotify: () => dispatch(hideNotify()),
 
     setVendors: (data) => dispatch(setVendors(data)),
-    setFilterVendors: (data) => dispatch(setFilterVendors(data)),
 
     setProducts: (data) => dispatch(setProducts(data)),
     setParams: (data) => dispatch(setParams(data)),

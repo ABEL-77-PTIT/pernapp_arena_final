@@ -15,7 +15,6 @@ const count = async () => {
 const find = async (req) => {
   try {
     const { page, limit, status, price, vendorId, keyword, publish, sort } = req.query
-    console.log('🚀 ~ file: product.js ~ line 18 ~ find ~ price', price)
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
 
@@ -56,15 +55,11 @@ const find = async (req) => {
       where = { ...where, publish: publish }
     }
 
-    console.log('check where ==>>', where)
-
     // handle sort product
     let arrSort
     if (sort !== undefined) {
       arrSort = sort.split('-')
     }
-
-    console.log('check Sort ==>>', arrSort)
 
     const count = await Model.count({ where })
     const items = await Model.findAll({
@@ -113,7 +108,6 @@ const create = async (data) => {
 const update = async (id, data) => {
   try {
     const updated = await Model.update(data, { where: { id }, returning: true, plain: true })
-    //sự khác biệt khi co plain: true thì trả về undefined, không có thì trả về mội
     return findById(updated[1].id)
   } catch (error) {
     throw error

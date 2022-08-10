@@ -1,3 +1,4 @@
+import { Op } from 'sequelize'
 import Model from '../models/vendor.js'
 
 const count = async () => {
@@ -10,12 +11,25 @@ const count = async () => {
 
 const find = async (req) => {
   try {
-    const { page, limit } = req.query
+    const { page, limit, vendors } = req.query
+
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
 
-    const count = await Model.count()
+    let where = {}
+    if (vendors) {
+      let vendorArr = vendors.split(',')
+      where = {
+        ...where,
+        id: {
+          [Op.in]: vendorArr,
+        },
+      }
+    }
+
+    const count = await Model.count({ where })
     const items = await Model.findAll({
+      where,
       limit: _limit,
       offset: (_page - 1) * _limit,
       order: [['updatedAt', 'DESC']],

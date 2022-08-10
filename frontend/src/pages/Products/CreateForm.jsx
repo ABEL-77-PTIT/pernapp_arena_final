@@ -42,6 +42,7 @@ const initialFormData = {
     label: 'Description',
     value: '',
     error: '',
+    required: true,
     validate: {
       trim: true,
       required: [true, 'Required'],
@@ -72,7 +73,7 @@ const initialFormData = {
       trim: true,
       required: [true, 'Required'],
       minlength: [2, 'Too Short'],
-      maxlength: [30, 'Too Long'],
+      maxlength: [1000, 'Too Long'],
     },
   },
   publish: {
@@ -159,18 +160,14 @@ function CreateForm(props) {
       }
     }
 
-    _formData.title.value = 'pr01'
-    _formData.description.value = 'pr01'
-    _formData.status.value = 'DRAFT'
-    _formData.price.value = '1200'
-    //set value mac dinh
+    //set default value for handle. Handle is handled on the backend
     _formData.handle.value = 'pr01'
 
     // handle create and update products
     console.log('created', created)
     if (created.id) {
       Array.from(['title', 'description', 'price', 'handle', 'status', 'vendorId']).map(
-        (key) => (_formData[key] = { ..._formData[key], value: String(created[key] || '') }), //spread operator clone obj and updated value
+        (key) => (_formData[key] = { ..._formData[key], value: String(created[key] || '') }),
       )
       Array.from(['publish']).map(
         (key) => (_formData[key] = { ..._formData[key], value: Boolean(created[key] || '') }),

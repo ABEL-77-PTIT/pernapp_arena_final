@@ -75,6 +75,7 @@ function Table(props) {
         />
       </Popover>,
     ]) || []
+
   return (
     <DataTable
       columnContentTypes={['text', 'text', 'text', 'text']}

@@ -9,7 +9,6 @@ function Table(props) {
 
   let rows =
     vendors?.items.map((item, index) => [
-      // index + 1,
       (vendors?.page - 1) * vendors?.limit + index + 1,
       <Stack vertical spacing="extraTight">
         <div>
@@ -47,6 +46,7 @@ function Table(props) {
         />
       </Popover>,
     ]) || []
+
   return (
     <DataTable
       columnContentTypes={['text', 'text', 'text', 'text']}

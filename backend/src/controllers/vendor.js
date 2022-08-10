@@ -1,5 +1,6 @@
 import ResponseHandler from '../helpers/responseHandler.js'
 import Service from '../services/vendor.js'
+
 export default {
   count: async (req, res) => {
     try {

@@ -120,20 +120,19 @@ function ProductsPage(props) {
     try {
       actions.showAppLoading()
 
-      //handle upload Thumbnail
+      // handle upload images
       if (formData['thumbnail'].value) {
-        let thumbnail = await UploadApi.upload([formData['thumbnail'].value])
-
-        if (!thumbnail.success) {
-          actions.showNotify({ error: true, message: thumbnail.error.message })
+        let images = await UploadApi.upload([formData['thumbnail'].value])
+        if (!images.success) {
+          actions.showNotify({ error: true, message: images.error.message })
         }
-        formData['thumbnail'].value = thumbnail.data[0]
+        formData['thumbnail'].value = images.data[0]
+      } else if (formData['thumbnail'].originValue) {
+        formData['thumbnail'].value = formData['thumbnail'].originValue
       }
 
-      //handle upload Images
-      if (formData['images'].value) {
+      if (formData['images'].value.length) {
         let images = await UploadApi.upload(formData['images'].value)
-
         if (!images.success) {
           actions.showNotify({ error: true, message: images.error.message })
         }
@@ -144,11 +143,9 @@ function ProductsPage(props) {
 
       let data = {}
 
-      Object.keys(formData).forEach((key) =>
-        formData[key].value || key === 'publish' || key === 'thumbnail'
-          ? (data[key] = formData[key].value)
-          : null,
-      )
+      Object.keys(formData)
+        .filter((key) => !['images'].includes(key))
+        .forEach((key) => (formData[key].value ? (data[key] = formData[key].value) : null))
 
       if (formData['images'].value.length) {
         data['images'] = formData['images'].value
@@ -157,7 +154,7 @@ function ProductsPage(props) {
       let res = null
       if (created?.id) {
         // update
-        res = await ProductApi.update(created.id, data)
+        res = await ProductApi.update(created?.id, data)
       } else {
         // create
         res = await ProductApi.create(data)
@@ -170,6 +167,7 @@ function ProductsPage(props) {
 
       setCreated(null)
       setSearchParams({})
+      getProducts()
     } catch (error) {
       console.log(error)
       actions.showNotify({ error: true, message: error.message })

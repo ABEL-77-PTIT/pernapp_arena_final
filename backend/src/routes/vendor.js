@@ -1,9 +1,10 @@
 import express from 'express'
 
-const router = express.Router()
 import Controller from '../controllers/vendor.js'
 import MulterUpload from '../connector/multer/index.js'
 import Validator from '../validator/vendor.js'
+
+const router = express.Router()
 
 router.get('/count', Controller.count)
 router.get('/', Controller.find)

@@ -1,5 +1,5 @@
-import ResponseHandler from '../helpers/responseHandler.js'
 import Joi from 'joi'
+import ResponseHandler from '../helpers/responseHandler.js'
 
 const schema = {
   name: Joi.string().min(2).max(50).required(),

@@ -9,6 +9,7 @@ const count = async (req, res) => {
     return ResponseHandler.error(res, error)
   }
 }
+
 const find = async (req, res) => {
   try {
     const data = await Service.find(req)
@@ -17,6 +18,7 @@ const find = async (req, res) => {
     return ResponseHandler.error(res, error)
   }
 }
+
 const findById = async (req, res) => {
   try {
     const data = await Service.findById(req)

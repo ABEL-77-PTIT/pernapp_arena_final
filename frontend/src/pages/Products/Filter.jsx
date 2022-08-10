@@ -188,7 +188,7 @@ function Filter(props) {
                   Price
                 </Button>
               }
-              onClose={() => setPriceActive(true)} //MUON TAT THI BO COMMENT DONG NAY
+              onClose={() => setPriceActive(true)}
             />
 
             <Sort onChange={onChange} filter={filter} />
