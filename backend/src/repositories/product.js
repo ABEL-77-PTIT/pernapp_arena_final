@@ -55,6 +55,17 @@ const find = async (req) => {
       where = { ...where, publish: publish }
     }
 
+    // if (vendors) {
+    //   let vendorArr = vendors.split(',')
+    //   console.log('🚀 vendorArr', vendorArr)
+    //   where = {
+    //     ...where,
+    //     vendorId: {
+    //       [Op.in]: vendorArr,
+    //     },
+    //   }
+    // }
+
     // handle sort product
     let arrSort
     if (sort !== undefined) {

@@ -40,6 +40,7 @@ function VendorsPage(props) {
       }
 
       setVendors(res.data)
+      actions.setVendors(res.data)
     } catch (error) {
       console.log(error)
       actions.showNotify({ error: true, message: error.message })

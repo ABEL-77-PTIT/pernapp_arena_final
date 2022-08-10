@@ -12,6 +12,7 @@ import {
 import { TextField } from '@shopify/polaris'
 import { useState } from 'react'
 import Sort from './Sort'
+// import FilterVendors from './FilterVendor'
 
 Filter.propTypes = {
   filter: PropTypes.object,
@@ -36,6 +37,7 @@ function Filter(props) {
   const [search, setSearch] = useState(filter.keyword || '')
   const [publishActive, setPublishActive] = useState(false)
   const [vendorActive, setVendorsActive] = useState(false)
+  // const [vendor1Active, setVendor1sActive] = useState(false)
   const [statusActive, setStatusActive] = useState(false)
   const [priceActive, setPriceActive] = useState(false)
 
@@ -60,14 +62,14 @@ function Filter(props) {
     },
   ]
 
-  const vendorsActionList = vendors?.items.map((item) => ({
-    content: item.name.charAt(0).toUpperCase() + item.name.slice(1),
+  const vendorsActionList = vendors?.items.map((item, index) => ({
+    content: `${index + 2}. ${item.name.charAt(0).toUpperCase() + item.name.slice(1)}`,
     value: '' + item.id,
     onAction: () => onChange({ ...filter, vendorId: '' + item.id }) & setVendorsActive(false),
   }))
 
   vendorsActionList.unshift({
-    content: 'No vendor',
+    content: '1. No vendor',
     value: '0',
     onAction: () => onChange({ ...filter, vendorId: '' + 0 }) & setVendorsActive(false),
   })
@@ -132,6 +134,7 @@ function Filter(props) {
             }}
           />
         </Stack.Item>
+
         <Stack.Item>
           <ButtonGroup segmented>
             <Popover
@@ -148,6 +151,7 @@ function Filter(props) {
             >
               <ActionList actionRole="menuitem" items={publishActionList} />
             </Popover>
+
             <Popover
               active={vendorActive}
               activator={
@@ -191,34 +195,57 @@ function Filter(props) {
               onClose={() => setPriceActive(true)}
             />
 
+            {/* <Popover
+              active={vendor1Active}
+              activator={
+                <Button
+                  disclosure={vendor1Active ? 'up' : 'down'}
+                  onClick={() => setVendor1sActive(!vendor1Active)}
+                >
+                  Vendors
+                </Button>
+              }
+              onClose={() => setVendor1sActive(true)}
+            /> */}
+
             <Sort onChange={onChange} filter={filter} />
           </ButtonGroup>
         </Stack.Item>
-
-        {priceActive && (
-          <Card sectioned title="Filter theo Price">
-            <Stack.Item fill>
-              <RangeSlider
-                output
-                label="Price is between"
-                value={rangeValue}
-                prefix={prefix}
-                min={min}
-                max={max}
-                step={step}
-                onChange={handleRangeSliderChange}
-              />
-            </Stack.Item>
-            <Stack.Item fill>
-              <div style={{ color: '#008080', marginTop: '10px' }}>
-                <Button size="slim" monochrome outline onClick={handleFilterPrice}>
-                  Submit
-                </Button>
-              </div>
-            </Stack.Item>
-          </Card>
-        )}
       </Stack>
+      {/* {vendor1Active && (
+        <FilterVendors
+          setVendor1sActive={setVendor1sActive}
+          vendor1Active={vendor1Active}
+          vendors={vendors}
+          filter={filter}
+          onChange={onChange}
+        />
+      )} */}
+
+      {priceActive && (
+        <Card sectioned title="Filter theo Price">
+          <Stack.Item fill>
+            <RangeSlider
+              output
+              label="Price is between"
+              value={rangeValue}
+              prefix={prefix}
+              min={min}
+              max={max}
+              step={step}
+              onChange={handleRangeSliderChange}
+            />
+          </Stack.Item>
+
+          <Stack.Item fill>
+            <div style={{ color: '#008080', marginTop: '10px' }}>
+              <Button size="slim" monochrome outline onClick={handleFilterPrice}>
+                Submit
+              </Button>
+            </div>
+          </Stack.Item>
+        </Card>
+      )}
 
       <Stack>
         {Boolean(filter.publish) && (

@@ -177,6 +177,7 @@ function ProductsPage(props) {
   }
 
   const handleFilter = (filter) => {
+    console.log('🚀 filter', filter)
     let params = qs.parse(location.search) || {}
 
     if ('page' in filter) {
@@ -219,6 +220,15 @@ function ProductsPage(props) {
       }
     }
 
+    if ('vendors' in filter) {
+      if (filter.vendors.length) {
+        let vendorSlug = filter.vendors.join([','])
+        params = { ...params, vendors: vendorSlug }
+      } else {
+        delete params.vendors
+      }
+    }
+
     if ('status' in filter) {
       if (filter.status) {
         params = { ...filter, status: filter.status }
@@ -243,6 +253,8 @@ function ProductsPage(props) {
         delete params.sort
       }
     }
+
+    console.log('params :>> ', params)
 
     setSearchParams(params)
     if (JSON.stringify(params) === '{}') {
