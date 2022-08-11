@@ -119,7 +119,10 @@ const initialFormData = {
     label: 'Vendor',
     value: '',
     error: '',
-    validate: {},
+    required: true,
+    validate: {
+      required: [true, 'Required'],
+    },
     options: [{ label: 'Select a vendor', value: '' }],
   },
   thumbnail: {
@@ -164,7 +167,6 @@ function CreateForm(props) {
     _formData.handle.value = 'pr01'
 
     // handle create and update products
-    console.log('created', created)
     if (created.id) {
       Array.from(['title', 'description', 'price', 'handle', 'status', 'vendorId']).map(
         (key) => (_formData[key] = { ..._formData[key], value: String(created[key] || '') }),
@@ -172,9 +174,11 @@ function CreateForm(props) {
       Array.from(['publish']).map(
         (key) => (_formData[key] = { ..._formData[key], value: Boolean(created[key] || '') }),
       )
-      Array.from(['thumbnail']).map(
-        (key) => (_formData[key] = { ..._formData[key], originValue: String(created[key]) }),
-      )
+      if (created['thumbnail'] !== null) {
+        Array.from(['thumbnail']).map(
+          (key) => (_formData[key] = { ..._formData[key], originValue: String(created[key]) }),
+        )
+      }
       Array.from(['images']).map(
         (key) => (_formData[key] = { ..._formData[key], originValue: created[key] || [] }),
       )

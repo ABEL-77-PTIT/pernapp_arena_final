@@ -144,11 +144,21 @@ function ProductsPage(props) {
       let data = {}
 
       Object.keys(formData)
-        .filter((key) => !['images'].includes(key))
-        .forEach((key) => (formData[key].value ? (data[key] = formData[key].value) : null))
+        .filter((key) => !['images', 'thumbnail'].includes(key))
+        .forEach((key) =>
+          formData[key].value || key === 'publish' ? (data[key] = formData[key].value) : null,
+        )
 
       if (formData['images'].value.length) {
         data['images'] = formData['images'].value
+      } else {
+        data['images'] = []
+      }
+
+      if (formData['thumbnail'].value) {
+        data['thumbnail'] = formData['thumbnail'].value
+      } else {
+        data['thumbnail'] = null
       }
 
       let res = null
@@ -177,7 +187,6 @@ function ProductsPage(props) {
   }
 
   const handleFilter = (filter) => {
-    console.log('🚀 filter', filter)
     let params = qs.parse(location.search) || {}
 
     if ('page' in filter) {
@@ -212,18 +221,9 @@ function ProductsPage(props) {
       }
     }
 
-    if ('vendorId' in filter) {
-      if (filter.vendorId) {
-        params = { ...params, vendorId: filter.vendorId }
-      } else {
-        delete params.vendorId
-      }
-    }
-
     if ('vendors' in filter) {
-      if (filter.vendors.length) {
-        let vendorSlug = filter.vendors.join([','])
-        params = { ...params, vendors: vendorSlug }
+      if (filter.vendors) {
+        params = { ...params, vendors: filter.vendors }
       } else {
         delete params.vendors
       }
@@ -237,10 +237,9 @@ function ProductsPage(props) {
       }
     }
 
-    if ('price' in filter && typeof filter.price !== 'string') {
-      if (filter.price.length) {
-        let priceSlug = filter.price.join(['-'])
-        params = { ...filter, price: priceSlug }
+    if ('price' in filter) {
+      if (filter.price) {
+        params = { ...filter, price: filter.price }
       } else {
         delete params.price
       }
@@ -253,8 +252,6 @@ function ProductsPage(props) {
         delete params.sort
       }
     }
-
-    console.log('params :>> ', params)
 
     setSearchParams(params)
     if (JSON.stringify(params) === '{}') {
@@ -287,7 +284,7 @@ function ProductsPage(props) {
           },
         ]}
       />
-
+      s
       <Card>
         <Card.Section>
           <Filter

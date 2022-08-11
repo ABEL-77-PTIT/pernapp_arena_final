@@ -12,7 +12,7 @@ import {
 import { TextField } from '@shopify/polaris'
 import { useState } from 'react'
 import Sort from './Sort'
-// import FilterVendors from './FilterVendor'
+import FilterVendors from './FilterVendor'
 
 Filter.propTypes = {
   filter: PropTypes.object,
@@ -36,8 +36,7 @@ function Filter(props) {
 
   const [search, setSearch] = useState(filter.keyword || '')
   const [publishActive, setPublishActive] = useState(false)
-  const [vendorActive, setVendorsActive] = useState(false)
-  // const [vendor1Active, setVendor1sActive] = useState(false)
+  const [vendor1Active, setVendor1sActive] = useState(false)
   const [statusActive, setStatusActive] = useState(false)
   const [priceActive, setPriceActive] = useState(false)
 
@@ -61,18 +60,6 @@ function Filter(props) {
       },
     },
   ]
-
-  const vendorsActionList = vendors?.items.map((item, index) => ({
-    content: `${index + 2}. ${item.name.charAt(0).toUpperCase() + item.name.slice(1)}`,
-    value: '' + item.id,
-    onAction: () => onChange({ ...filter, vendorId: '' + item.id }) & setVendorsActive(false),
-  }))
-
-  vendorsActionList.unshift({
-    content: '1. No vendor',
-    value: '0',
-    onAction: () => onChange({ ...filter, vendorId: '' + 0 }) & setVendorsActive(false),
-  })
 
   const statusActionList = [
     {
@@ -103,7 +90,7 @@ function Filter(props) {
     }
 
     window.__searchTimeout = setTimeout(() => {
-      onChange({ ...filter, price: rangeValue })
+      onChange({ ...filter, price: rangeValue.join('-') })
     }, 600)
   }
 
@@ -153,21 +140,6 @@ function Filter(props) {
             </Popover>
 
             <Popover
-              active={vendorActive}
-              activator={
-                <Button
-                  disclosure={vendorActive ? 'up' : 'down'}
-                  onClick={() => setVendorsActive(!vendorActive)}
-                >
-                  Vendors
-                </Button>
-              }
-              onClose={() => setVendorsActive(false)}
-            >
-              <ActionList actionRole="menuitem" items={vendorsActionList} />
-            </Popover>
-
-            <Popover
               active={statusActive}
               activator={
                 <Button
@@ -195,7 +167,7 @@ function Filter(props) {
               onClose={() => setPriceActive(true)}
             />
 
-            {/* <Popover
+            <Popover
               active={vendor1Active}
               activator={
                 <Button
@@ -206,13 +178,13 @@ function Filter(props) {
                 </Button>
               }
               onClose={() => setVendor1sActive(true)}
-            /> */}
+            />
 
             <Sort onChange={onChange} filter={filter} />
           </ButtonGroup>
         </Stack.Item>
       </Stack>
-      {/* {vendor1Active && (
+      {vendor1Active && (
         <FilterVendors
           setVendor1sActive={setVendor1sActive}
           vendor1Active={vendor1Active}
@@ -220,7 +192,7 @@ function Filter(props) {
           filter={filter}
           onChange={onChange}
         />
-      )} */}
+      )}
 
       {priceActive && (
         <Card sectioned title="Filter theo Price">
@@ -251,11 +223,6 @@ function Filter(props) {
         {Boolean(filter.publish) && (
           <Tag onRemove={() => onChange({ ...filter, publish: '' })}>
             Publish: {publishActionList.find((item) => item.value === filter.publish).content}
-          </Tag>
-        )}
-        {Boolean(filter.vendorId) && (
-          <Tag onRemove={() => onChange({ ...filter, vendorId: '' })}>
-            Vendor: {vendorsActionList.find((item) => item.value === filter.vendorId).content}
           </Tag>
         )}
         {Boolean(filter.status) && (

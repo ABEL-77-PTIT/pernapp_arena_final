@@ -14,9 +14,10 @@ const count = async () => {
 
 const find = async (req) => {
   try {
-    const { page, limit, status, price, vendorId, keyword, publish, sort } = req.query
+    const { page, limit, status, price, keyword, publish, vendors, sort } = req.query
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
+    let _vendors = vendors ? vendors.split('-') : ''
 
     let where = {}
     if (status !== undefined) {
@@ -33,13 +34,13 @@ const find = async (req) => {
       }
     }
 
-    if (vendorId !== undefined) {
-      if (vendorId !== '0') {
-        where = { ...where, vendorId: parseInt(vendorId) }
-      } else {
-        where = { ...where, vendorId: { [Op.is]: null } }
-      }
-    }
+    // if (vendorId !== undefined) {
+    //   if (vendorId !== '0') {
+    //     where = { ...where, vendorId: parseInt(vendorId) }
+    //   } else {
+    //     where = { ...where, vendorId: { [Op.is]: null } }
+    //   }
+    // }
 
     if (keyword) {
       where = {
@@ -55,16 +56,9 @@ const find = async (req) => {
       where = { ...where, publish: publish }
     }
 
-    // if (vendors) {
-    //   let vendorArr = vendors.split(',')
-    //   console.log('🚀 vendorArr', vendorArr)
-    //   where = {
-    //     ...where,
-    //     vendorId: {
-    //       [Op.in]: vendorArr,
-    //     },
-    //   }
-    // }
+    if (vendors) {
+      where = { ...where, vendorId: { [Op.in]: _vendors } }
+    }
 
     // handle sort product
     let arrSort
