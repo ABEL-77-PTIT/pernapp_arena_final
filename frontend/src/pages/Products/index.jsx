@@ -284,7 +284,7 @@ function ProductsPage(props) {
           },
         ]}
       />
-      s
+
       <Card>
         <Card.Section>
           <Filter

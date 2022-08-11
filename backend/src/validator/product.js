@@ -10,7 +10,7 @@ const schema = {
   status: Joi.any(),
   thumbnail: Joi.any(),
   images: Joi.any(),
-  vendorId: Joi.any().required(),
+  vendorId: Joi.any(),
 }
 
 let createSchema = {}
