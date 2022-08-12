@@ -1,4 +1,4 @@
-import { Op, where } from 'sequelize'
+import { Op } from 'sequelize'
 import Model from '../models/product.js'
 import VendorModel from '../models/vendor.js'
 
@@ -33,14 +33,6 @@ const find = async (req) => {
         },
       }
     }
-
-    // if (vendorId !== undefined) {
-    //   if (vendorId !== '0') {
-    //     where = { ...where, vendorId: parseInt(vendorId) }
-    //   } else {
-    //     where = { ...where, vendorId: { [Op.is]: null } }
-    //   }
-    // }
 
     if (keyword) {
       where = {
