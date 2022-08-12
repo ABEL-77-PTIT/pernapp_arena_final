@@ -64,7 +64,7 @@ const find = async (req) => {
       limit: _limit,
       offset: (_page - 1) * _limit,
       include,
-      order: [arrSort ? [arrSort[0], arrSort[1]] : ['updatedAt', 'DESC']],
+      order: [arrSort ? arrSort : ['updatedAt', 'DESC']],
     })
 
     return {
