@@ -11,7 +11,7 @@ const count = async () => {
 
 const find = async (req) => {
   try {
-    return await Repository.find(req)
+    return await Repository.find(req.query)
   } catch (error) {
     throw error
   }

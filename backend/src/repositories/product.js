@@ -12,24 +12,26 @@ const count = async () => {
   }
 }
 
-const find = async (req) => {
+const find = async ({ page, limit, status, price, keyword, publish, vendors, sort }) => {
   try {
-    const { page, limit, status, price, keyword, publish, vendors, sort } = req.query
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
     let _vendors = vendors ? vendors.split('-') : ''
+    let _price = price ? price.split(['-']) : [1000, 100000]
+
+    console.log('_price', _price)
 
     let where = {}
     if (status) {
       where = { ...where, status }
     }
 
-    if (price) {
+    if (_price) {
       where = {
         ...where,
         price: {
-          [Op.gte]: parseInt(price.split('-')[0]),
-          [Op.lte]: parseInt(price.split('-')[1]),
+          [Op.gte]: parseInt(_price[0]),
+          [Op.lte]: parseInt(_price[1]),
         },
       }
     }
