@@ -120,7 +120,7 @@ function ProductsPage(props) {
     try {
       actions.showAppLoading()
 
-      // handle upload images
+      // handle upload images and thumbnail
       if (formData['thumbnail'].value) {
         let images = await UploadApi.upload([formData['thumbnail'].value])
         if (!images.success) {
@@ -231,7 +231,7 @@ function ProductsPage(props) {
 
     if ('status' in filter) {
       if (filter.status) {
-        params = { ...filter, status: filter.status }
+        params = { ...params, status: filter.status }
       } else {
         delete params.status
       }
@@ -239,7 +239,7 @@ function ProductsPage(props) {
 
     if ('price' in filter) {
       if (filter.price) {
-        params = { ...filter, price: filter.price }
+        params = { ...params, price: filter.price }
       } else {
         delete params.price
       }

@@ -85,13 +85,7 @@ function Filter(props) {
 
   const handleFilterPrice = () => {
     setPriceActive(!priceActive)
-    if (window.__searchTimeout) {
-      clearTimeout(window._searchTimeout)
-    }
-
-    window.__searchTimeout = setTimeout(() => {
-      onChange({ ...filter, price: rangeValue.join('-') })
-    }, 600)
+    onChange({ ...filter, price: rangeValue.join('-') })
   }
 
   const handleSearch = (value) => {
@@ -225,13 +219,13 @@ function Filter(props) {
             Publish: {publishActionList.find((item) => item.value === filter.publish).content}
           </Tag>
         )}
+        {Boolean(filter.price) && (
+          <Tag onRemove={() => onChange({ ...filter, price: '' })}>Price range: {filter.price}</Tag>
+        )}
         {Boolean(filter.status) && (
           <Tag onRemove={() => onChange({ ...filter, status: '' })}>
             Status: {statusActionList.find((item) => item.value === filter.status).content}
           </Tag>
-        )}
-        {Boolean(filter.price) && (
-          <Tag onRemove={() => onChange({ ...filter, price: [] })}>Price range: {filter.price}</Tag>
         )}
         {Boolean(filter.sort) && (
           <Tag onRemove={() => onChange({ ...filter, sort: '' })}>Sort by: {filter.sort}</Tag>

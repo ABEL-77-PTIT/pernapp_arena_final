@@ -20,7 +20,7 @@ const find = async (req) => {
     let _vendors = vendors ? vendors.split('-') : ''
 
     let where = {}
-    if (status !== undefined) {
+    if (status) {
       where = { ...where, status }
     }
 
