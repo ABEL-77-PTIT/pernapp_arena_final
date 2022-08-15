@@ -24,7 +24,6 @@ const NODE_ENV = process.env.NODE_ENV || 'development'
 
 const app = express()
 
-// view engine setup
 app.set('port', PORT)
 app.set('views', path.join(__dirname, 'src/views'))
 app.set('view engine', 'pug')
