@@ -1,6 +1,7 @@
-import { Button, Popover, ActionList } from '@shopify/polaris'
+import { Button, Popover, ActionList, Stack, Icon } from '@shopify/polaris'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { SortMinor } from '@shopify/polaris-icons'
 
 Sort.propTypes = {
   onChange: PropTypes.func,
@@ -20,7 +21,10 @@ function Sort(props) {
 
   const activator = (
     <Button onClick={togglePopoverActive} disclosure={popoverActive ? 'up' : 'down'}>
-      More sorting
+      <Stack spacing="tight">
+        <Icon source={SortMinor} color="base" />
+        <p>Sort</p>
+      </Stack>
     </Button>
   )
 
@@ -28,19 +32,19 @@ function Sort(props) {
     {
       content: 'Price',
       value: 'asc',
-      onAction: () => onChange({ ...filter, sort: 'price-ASC' }),
+      onAction: () => onChange({ ...filter, sort: 'price:ASC' }),
     },
 
     {
       content: 'Title',
       value: 'asc',
-      onAction: () => onChange({ ...filter, sort: 'title-ASC' }),
+      onAction: () => onChange({ ...filter, sort: 'title:ASC' }),
     },
 
     {
       content: 'UpdatedAt',
       value: 'asc',
-      onAction: () => onChange({ ...filter, sort: 'updatedAt-ASC' }),
+      onAction: () => onChange({ ...filter, sort: 'updatedAt:ASC' }),
     },
   ]
 
@@ -48,19 +52,19 @@ function Sort(props) {
     {
       content: 'Price',
       value: 'desc',
-      onAction: () => onChange({ ...filter, sort: 'price-DESC' }),
+      onAction: () => onChange({ ...filter, sort: 'price:DESC' }),
     },
 
     {
       content: 'Title',
       value: 'desc',
-      onAction: () => onChange({ ...filter, sort: 'title-DESC' }),
+      onAction: () => onChange({ ...filter, sort: 'title:DESC' }),
     },
 
     {
       content: 'UpdatedAt',
       value: 'desc',
-      onAction: () => onChange({ ...filter, sort: 'updatedAt-DESC' }),
+      onAction: () => onChange({ ...filter, sort: 'updatedAt:DESC' }),
     },
   ]
 

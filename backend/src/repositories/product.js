@@ -17,9 +17,8 @@ const find = async ({ page, limit, status, price, keyword, publish, vendors, sor
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
     let _vendors = vendors ? vendors.split('-') : ''
-    let _price = price ? price.split(['-']) : [1000, 100000]
-
-    console.log('_price', _price)
+    let _price = price ? price.split(['-']) : [1, 100000000]
+    let _sort = sort ? sort.split(':') : ['updatedAt', 'DESC']
 
     let where = {}
     if (status) {
@@ -54,19 +53,13 @@ const find = async ({ page, limit, status, price, keyword, publish, vendors, sor
       where = { ...where, vendorId: { [Op.in]: _vendors } }
     }
 
-    // handle sort product
-    let arrSort
-    if (sort !== undefined) {
-      arrSort = sort.split('-')
-    }
-
     const count = await Model.count({ where })
     const items = await Model.findAll({
       where,
       limit: _limit,
       offset: (_page - 1) * _limit,
       include,
-      order: [arrSort ? arrSort : ['updatedAt', 'DESC']],
+      order: [_sort],
     })
 
     return {

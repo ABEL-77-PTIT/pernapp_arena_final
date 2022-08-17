@@ -9,21 +9,18 @@ const count = async () => {
   }
 }
 
-const find = async (req) => {
+const find = async ({ page, limit, keyword, sort }) => {
   try {
-    const { page, limit, vendors } = req.query
-
     let _page = page ? (parseInt(page) >= 1 ? parseInt(page) : 1) : 1
     let _limit = limit ? (parseInt(limit) >= 1 ? parseInt(limit) : 20) : 20
+    let _keyword = keyword ? keyword : ''
+    let _sort = sort ? sort.split(':') : ['updatedAt', 'DESC']
 
     let where = {}
-    if (vendors) {
-      let vendorArr = vendors.split(',')
+    if (_keyword) {
       where = {
         ...where,
-        id: {
-          [Op.in]: vendorArr,
-        },
+        name: { [Op.like]: `%${_keyword}%` },
       }
     }
 
@@ -32,7 +29,7 @@ const find = async (req) => {
       where,
       limit: _limit,
       offset: (_page - 1) * _limit,
-      order: [['updatedAt', 'DESC']],
+      order: [_sort],
     })
 
     return {

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
-import { Autocomplete, Stack, Tag } from '@shopify/polaris'
+import { Autocomplete, Stack, Tag, TextField } from '@shopify/polaris'
 import { useCallback, useState } from 'react'
 import { useEffect } from 'react'
+import Sort from './Sort'
 
 Filter.propTypes = {
   vendors: PropTypes.object,
@@ -16,116 +17,39 @@ Filter.defaultProps = {
 }
 
 function Filter(props) {
-  const { vendors, onChange, filter } = props
+  const { onChange, filter } = props
 
-  const paginationInterval = 15
-  const vendorsOptions = Array.from(vendors.items).map((item, index) => ({
-    value: '' + item.id,
-    label: `${index + 1}. ${item.name}`,
-  }))
+  const [search, setSearch] = useState(filter.keyword || '')
 
-  const [selectedOptions, setSelectedOptions] = useState([])
-  const [inputValue, setInputValue] = useState('')
-  const [options, setOptions] = useState(vendorsOptions)
-  const [isLoading, setIsLoading] = useState(false)
-  const [willLoadMoreResults, setWillLoadMoreResults] = useState(true)
-  const [visibleOptionIndex, setVisibleOptionIndex] = useState(paginationInterval)
+  const handleSearch = (value) => {
+    setSearch(value)
 
-  useEffect(() => {
-    onChange({ ...filter, vendors: selectedOptions })
-  }, [selectedOptions])
-
-  const handleLoadMoreResults = useCallback(() => {
-    if (willLoadMoreResults) {
-      setIsLoading(true)
-
-      setTimeout(() => {
-        const remainingOptionCount = options.length - visibleOptionIndex
-        const nextVisibleOptionIndex =
-          remainingOptionCount >= paginationInterval
-            ? visibleOptionIndex + paginationInterval
-            : visibleOptionIndex + remainingOptionCount
-
-        setIsLoading(false)
-        setVisibleOptionIndex(nextVisibleOptionIndex)
-
-        if (remainingOptionCount <= paginationInterval) {
-          setWillLoadMoreResults(false)
-        }
-      }, 1000)
-    }
-  }, [willLoadMoreResults, visibleOptionIndex, options.length])
-
-  const removeTag = useCallback(
-    (tag) => () => {
-      const options = [...selectedOptions]
-      options.splice(options.indexOf(tag), 1)
-      setSelectedOptions(options)
-    },
-    [selectedOptions],
-  )
-
-  const updateText = (value) => {
-    setInputValue(value)
-
-    if (value === '') {
-      setOptions(vendorsOptions)
-      return
+    if (window.__searchTimeout) {
+      clearTimeout(window.__searchTimeout)
     }
 
-    const filterRegex = new RegExp(value, 'i')
-    const resultOptions = vendorsOptions.filter((option) => option.label.match(filterRegex))
-
-    setOptions(resultOptions)
+    window.__searchTimeout = setTimeout(() => {
+      onChange({ ...filter, keyword: value })
+    }, 600)
   }
 
-  const textField = (
-    <Autocomplete.TextField
-      onChange={updateText}
-      label="Filter"
-      value={inputValue}
-      placeholder="choose your vendors"
-    />
-  )
-
-  const hasSelectedOptions = selectedOptions.length > 0
-
-  const tagsMarkup = hasSelectedOptions
-    ? selectedOptions.map((option) => {
-        let tagLabel = ''
-        vendorsOptions.forEach((vendorOption) => {
-          if (vendorOption.value === option) {
-            tagLabel = vendorOption.label
-          }
-        })
-        return (
-          <Tag key={`option${option}`} onRemove={removeTag(option)}>
-            {tagLabel}
-          </Tag>
-        )
-      })
-    : null
-
-  const optionList = options.slice(0, visibleOptionIndex)
-
-  const selectedTagMarkup = hasSelectedOptions ? (
-    <Stack spacing="extraTight">{tagsMarkup}</Stack>
-  ) : null
-
   return (
-    <Stack vertical>
-      <Autocomplete
-        allowMultiple
-        options={optionList}
-        selected={selectedOptions}
-        textField={textField}
-        onSelect={setSelectedOptions}
-        listTitle="Suggested Tags"
-        loading={isLoading}
-        onLoadMoreResults={handleLoadMoreResults}
-        willLoadMoreResults={willLoadMoreResults}
-      />
-      {selectedTagMarkup}
+    <Stack>
+      <Stack.Item fill>
+        <TextField
+          value={search}
+          placeholder="Search..."
+          onChange={(value) => handleSearch(value)}
+          clearButton
+          onClearButtonClick={() => {
+            setSearch('')
+            onChange({ ...filter, keyword: '' })
+          }}
+        />
+      </Stack.Item>
+      <Stack.Item>
+        <Sort onChange={onChange} filter={filter} />
+      </Stack.Item>
     </Stack>
   )
 }

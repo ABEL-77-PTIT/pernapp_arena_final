@@ -58,7 +58,7 @@ function VendorsPage(props) {
 
     if ('page' in filter) {
       if (filter.page) {
-        params = { ...filter, page: filter.page }
+        params = { ...params, page: filter.page }
       } else {
         delete params.page
       }
@@ -66,18 +66,25 @@ function VendorsPage(props) {
 
     if ('limit' in filter) {
       if (filter.limit) {
-        params = { ...filter, limit: filter.limit }
+        params = { ...params, limit: filter.limit }
       } else {
         delete params.limit
       }
     }
 
-    if ('vendors' in filter) {
-      if (filter.vendors.length) {
-        let vendorSlug = filter.vendors.join([','])
-        params = { ...params, vendors: vendorSlug }
+    if ('keyword' in filter) {
+      if (filter.keyword) {
+        params = { ...params, keyword: filter.keyword }
       } else {
-        delete params.vendors
+        delete params.keyword
+      }
+    }
+
+    if ('sort' in filter) {
+      if (filter.sort) {
+        params = { ...params, sort: filter.sort }
+      } else {
+        delete params.sort
       }
     }
 
